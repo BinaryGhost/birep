@@ -1,29 +1,14 @@
-import type { LanguageOptions } from '../internal/lang-type';
+import type { LanguageOptions } from '../../internal/lang-type';
 
-export const language: LanguageOptions = {
-	allowed_beginning_idents: ['beg', 'start', 'beginning'],
-	allowed_ending_idents: ['end', 'ending'],
+export const sbl_style: LanguageOptions = {
+	allowed_beginning_idents: [''],
+	allowed_ending_idents: [],
 	allowed_book_delimiters: [';'],
 	allowed_chapter_delimiters: [';'],
 	allowed_verse_seperators: [','],
 	allowed_chapter_verse_seperators: [':'],
 	allowed_range_characters: ['-'],
-	allowed_chapter_verse_idents: [
-		'chapter',
-		'verse',
-		'chap',
-		'ch',
-		'v',
-		'ver',
-		'c.',
-		'v.',
-		'ch.',
-		'chs.',
-		'vrs.',
-		'vr.',
-		'chap.',
-		'ver.',
-	],
+	allowed_chapter_verse_idents: [],
 	allowed_number_sets: new Set<string>(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']),
 	allowed_character_sets: new Set<string>([
 		'a',

@@ -1,6 +1,6 @@
 import type { LanguageOptions } from '../internal/lang-type';
 
-export const language: LanguageOptions = {
+export const combined_language: LanguageOptions = {
 	allowed_beginning_idents: ['beg', 'start', 'beginning'],
 	allowed_ending_idents: ['end', 'ending'],
 	allowed_book_delimiters: [';'],

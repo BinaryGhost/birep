@@ -1,3 +1,5 @@
+THIS REPOSITORY IS STILL IN DEVELOPMENT. DONT USE IT!
+
 # birep
 
 Extract information from bible-references
