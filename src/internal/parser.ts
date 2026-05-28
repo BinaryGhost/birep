@@ -1,9 +1,23 @@
-import type { Token } from './lexing';
+import { BaseLexer, type Token } from './lexing';
+import type { StandardForm } from './output-interfaces';
 
-export class Parser {
+interface parser_essentials {
+	current(): Token | undefined;
+	peek(): Token | undefined;
+	consume(): void;
+}
+
+export class Parser implements parser_essentials {
 	private index: number = 0;
+	private source_tokens: Token[] = [];
 
-	constructor(private source_tokens: Token[]) {}
+	public standard_output: StandardForm[] = [];
+
+	constructor(lexer: BaseLexer) {
+		if (lexer instanceof BaseLexer) {
+			this.source_tokens = lexer.token_list;
+		}
+	}
 
 	current(): Token | undefined {
 		if (this.index > this.source_tokens.length) {

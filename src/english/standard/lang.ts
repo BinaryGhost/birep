@@ -1,8 +1,6 @@
 import type { LanguageOptions } from '../../internal/lang-type';
 
-export const sbl_style: LanguageOptions = {
-	allowed_beginning_idents: [''],
-	allowed_ending_idents: [],
+export const standard_style: LanguageOptions = {
 	allowed_book_delimiters: [';'],
 	allowed_chapter_delimiters: [';'],
 	allowed_verse_seperators: [','],

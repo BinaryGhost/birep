@@ -1,14 +1,12 @@
-import type { Token } from './lexing';
-export interface BirepErrorKind {
+interface BirepError {
 	heading: string;
-	explanation: (t: Token) => string;
 	possible_fixes: string[];
 }
 
-export const BirepError: Record<string, BirepErrorKind> = {
-	InvalidCharacter: {
-		heading: 'Invalid Character',
-		explanation: (t: Token) => `Invalid character '${t.representation}' at position ${t.pos}`,
-		possible_fixes: ["Try sticking to the allowed characters for the language you're using."],
-	},
-};
+// Kid: Mom, I want golang errors
+// Mom: We have golang errors at home
+//
+// Golang errors at home:
+export type Error = BirepError | null;
+
+export type Success<T> = { t: T; e: Error };
