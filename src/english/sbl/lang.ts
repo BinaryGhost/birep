@@ -1,6 +1,14 @@
 import type { LanguageOptions } from '../../internal/lang-type';
 
 export const sbl_style: LanguageOptions = {
+	allowed_ordinal_words: {
+		first: [],
+		second: [],
+		third: [],
+		fourth: [],
+		fifth: [],
+	},
+	allowed_ordinal_abbrs: { first: [], second: [], third: [], fourth: [], fifth: [] },
 	allowed_book_delimiters: [';'],
 	allowed_chapter_delimiters: [';'],
 	allowed_verse_seperators: [','],
