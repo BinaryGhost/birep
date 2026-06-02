@@ -2,12 +2,13 @@ import { Parser } from '../../internal/parser';
 import type { Error, Success } from '../../internal/errors';
 import type { Token } from '../../internal/lexing';
 import { standard_style } from './lang';
+import * as booki from './book-index';
 
 // function parseReference() {}
 // function parseBook() {}
 
 export class StandardEnglishParser extends Parser {
-	private gathered_ordinal_words = new Set<string>(
+	override gathered_ordinal_words: Set<string> = new Set<string>(
 		...standard_style.allowed_ordinal_words.first,
 		...standard_style.allowed_ordinal_words.second,
 		...standard_style.allowed_ordinal_words.third,
@@ -15,7 +16,7 @@ export class StandardEnglishParser extends Parser {
 		...standard_style.allowed_ordinal_words.fifth,
 	);
 
-	private gathered_ordinal_abbrs = new Set<string>(
+	override gathered_ordinal_abbrs: Set<string> = new Set<string>(
 		...standard_style.allowed_ordinal_abbrs.first,
 		...standard_style.allowed_ordinal_abbrs.second,
 		...standard_style.allowed_ordinal_abbrs.third,
@@ -188,7 +189,7 @@ export class StandardEnglishParser extends Parser {
 				e: null,
 			};
 		} else {
-			// Missmatch -> 1nd | 3
+			// Missmatch -> 1nd | 3st
 			return {
 				t: 0,
 				e: {
@@ -210,21 +211,109 @@ export class StandardEnglishParser extends Parser {
 			ordinalness = result.t;
 		}
 
-		this.consume();
+		// Because of ordinals like 1st -> <num> <identfier>
+		if (prev_tok.kind === 'num') {
+			this.consume();
+		}
+
 		const next_tok = this.current();
+		if (next_tok === undefined || next_tok.kind !== 'ident') {
+			return { heading: '', possible_fixes: [] };
+		}
 
 		switch (ordinalness) {
 			case 5:
+				if (booki.maccabees.has(next_tok.representation)) {
+					return null;
+				}
 				break;
 			case 4:
+				if (booki.maccabees.has(next_tok.representation)) {
+					return null;
+				}
 				break;
 			case 3:
+				if (booki.maccabees.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.johns_epistles.has(next_tok.representation)) {
+					return null;
+				}
 				break;
 			case 2:
+				if (booki.maccabees.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.johns_epistles.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.peter.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.timothy.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.thessalonians.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.corinthians.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.chronicles.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.samuel.has(next_tok.representation)) {
+					return null;
+				}
+
 				break;
 			case 1:
+				if (booki.maccabees.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.johns_epistles.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.peter.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.timothy.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.thessalonians.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.corinthians.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.chronicles.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.kings.has(next_tok.representation)) {
+					return null;
+				}
+
+				if (booki.samuel.has(next_tok.representation)) {
+					return null;
+				}
 				break;
 			default:
+				// Missmatch -> 5. Corinthians or Fouth Luke
 				return { heading: '', possible_fixes: [] };
 		}
 

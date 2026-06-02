@@ -11,6 +11,9 @@ export class Parser implements parser_essentials {
 	private index: number = 0;
 	private source_tokens: Token[] = [];
 
+	gathered_ordinal_abbrs: Set<string> = new Set([]);
+	gathered_ordinal_words: Set<string> = new Set([]);
+
 	public standard_output: StandardForm[] = [];
 
 	constructor(lexer: BaseLexer) {
