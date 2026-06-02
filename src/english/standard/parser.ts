@@ -3,6 +3,9 @@ import type { Error, Success } from '../../internal/errors';
 import type { Token } from '../../internal/lexing';
 import { standard_style } from './lang';
 import * as booki from './book-index';
+import * as repr from './representation';
+import { possible_ordinal_books, type WordedBookNode } from '../../internal/book-type';
+import { english_standard_ordinals_representation } from './representation';
 
 // function parseReference() {}
 // function parseBook() {}
@@ -221,102 +224,62 @@ export class StandardEnglishParser extends Parser {
 			return { heading: '', possible_fixes: [] };
 		}
 
-		switch (ordinalness) {
-			case 5:
-				if (booki.maccabees.has(next_tok.representation)) {
-					return null;
-				}
-				break;
-			case 4:
-				if (booki.maccabees.has(next_tok.representation)) {
-					return null;
-				}
-				break;
-			case 3:
-				if (booki.maccabees.has(next_tok.representation)) {
-					return null;
-				}
+		// TODO: Apocrypha currently unimplemented
 
-				if (booki.johns_epistles.has(next_tok.representation)) {
-					return null;
-				}
-				break;
-			case 2:
-				if (booki.maccabees.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.johns_epistles.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.peter.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.timothy.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.thessalonians.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.corinthians.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.chronicles.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.samuel.has(next_tok.representation)) {
-					return null;
-				}
-
-				break;
-			case 1:
-				if (booki.maccabees.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.johns_epistles.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.peter.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.timothy.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.thessalonians.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.corinthians.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.chronicles.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.kings.has(next_tok.representation)) {
-					return null;
-				}
-
-				if (booki.samuel.has(next_tok.representation)) {
-					return null;
-				}
-				break;
-			default:
-				// Missmatch -> 5. Corinthians or Fouth Luke
-				return { heading: '', possible_fixes: [] };
+		let representation;
+		if (booki.johns_epistles.has(next_tok.representation)) {
+			representation = english_standard_ordinals_representation.english({
+				book: possible_ordinal_books.John,
+				is_apocrpyhal: false,
+				ordinal: ordinalness,
+			});
+		} else if (booki.peter.has(next_tok.representation)) {
+			representation = english_standard_ordinals_representation.english({
+				book: possible_ordinal_books.Peter,
+				is_apocrpyhal: false,
+				ordinal: ordinalness,
+			});
+		} else if (booki.timothy.has(next_tok.representation)) {
+			representation = english_standard_ordinals_representation.english({
+				book: possible_ordinal_books.Timothy,
+				is_apocrpyhal: false,
+				ordinal: ordinalness,
+			});
+		} else if (booki.thessalonians.has(next_tok.representation)) {
+			representation = english_standard_ordinals_representation.english({
+				book: possible_ordinal_books.Thessalonians,
+				is_apocrpyhal: false,
+				ordinal: ordinalness,
+			});
+		} else if (booki.corinthians.has(next_tok.representation)) {
+			representation = english_standard_ordinals_representation.english({
+				book: possible_ordinal_books.Corinthians,
+				is_apocrpyhal: false,
+				ordinal: ordinalness,
+			});
+		} else if (booki.chronicles.has(next_tok.representation)) {
+			representation = english_standard_ordinals_representation.english({
+				book: possible_ordinal_books.Chronicles,
+				is_apocrpyhal: false,
+				ordinal: ordinalness,
+			});
+		} else if (booki.samuel.has(next_tok.representation)) {
+			representation = english_standard_ordinals_representation.english({
+				book: possible_ordinal_books.Samuel,
+				is_apocrpyhal: false,
+				ordinal: ordinalness,
+			});
+		} else {
+			// Missmatch -> 5. Corinthians or Fourth Luke
+			// Or unimplemented (apocryphal) books
+			return { heading: '', possible_fixes: [] };
 		}
 
+		return null;
+	}
+
+	override parseWordedBookname(ref_trie: WordedBookNode): Error {
+		const first_word = this.current()?.representation.toLocaleLowerCase();
 		return null;
 	}
 }

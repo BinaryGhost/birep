@@ -1,9 +1,9 @@
 import { ToOrdinalRepresentation, ToRepresentation } from '../../internal/book-type';
 import type { t_book, t_ordinal_book } from '../../internal/book-type';
 
-export class EnglishStandardOrdinals extends ToOrdinalRepresentation {
-	override _native_(num: number, ord: t_ordinal_book): string | undefined {
-		return this.english(num, ord);
+export class EnglishStandardOrdinalRepresentation extends ToOrdinalRepresentation {
+	override _native_(ord_book: t_ordinal_book): string | undefined {
+		return this.english(ord_book);
 	}
 }
 
@@ -12,3 +12,8 @@ export class EnglishStandardRepresentation extends ToRepresentation {
 		return this.english(bk, psalm_chapter_number);
 	}
 }
+
+export const english_standard_ordinals_representation: EnglishStandardOrdinalRepresentation =
+	new EnglishStandardOrdinalRepresentation();
+export const english_standard_representation: EnglishStandardRepresentation =
+	new EnglishStandardRepresentation();

@@ -1,4 +1,4 @@
-import type { bookset } from '../../internal/book-type';
+import type { bookset, ordinal_bookset } from '../../internal/book-type';
 
 //
 // Old Testament
@@ -10,9 +10,9 @@ export const deuteronomy: bookset = ['DEU'];
 export const josua: bookset = ['JOS'];
 export const judges: bookset = ['JDG'];
 export const ruth: bookset = ['RUT'];
-export const samuel_bookname: bookset = ['SA']; // TODO: Handle 1. Samuel and 2. Samuel
-export const kings_bookname: bookset = ['KI']; // TODO: Handle 1. Kings and 2. Kings
-export const chronicles_bookname: bookset = ['CH']; // TODO: Handle 1. Chronicles and 2. Chronicles
+export const samuel: ordinal_bookset = ['SA'];
+export const kings: ordinal_bookset = ['KI'];
+export const chronicles: ordinal_bookset = ['CH'];
 export const ezra: bookset = ['EZR'];
 export const nehemiah: bookset = ['NEH'];
 export const esther: bookset = ['EST'];
@@ -47,19 +47,19 @@ export const luke: bookset = ['LUK'];
 export const john: bookset = ['JHN'];
 export const acts: bookset = ['ACT'];
 export const romans: bookset = ['ROM'];
-export const corinthians_bookname: bookset = ['CO']; // TODO: Handle 1. Corinthians and 2. Corinthians
+export const corinthians: ordinal_bookset = ['CO'];
 export const galatians: bookset = ['GAL'];
 export const ephesians: bookset = ['EPH'];
 export const philippians: bookset = ['PHP'];
 export const colossians: bookset = ['COL'];
-export const thessalonians_bookname: bookset = ['TH']; // TODO: Handle 1. Thessalonians and 2. Thessalonians
-export const timothy_bookname: bookset = ['TI']; // TODO: Handle 1. Timothy and 2. Timothy
+export const thessalonians: ordinal_bookset = ['TH'];
+export const timothy: ordinal_bookset = ['TI'];
 export const titus: bookset = ['TIT'];
 export const philemon: bookset = ['PHM'];
 export const hebrews: bookset = ['HEB'];
 export const james: bookset = ['JAM'];
-export const peter_bookname: bookset = ['PE']; // TODO: Handle 1. Peter and 2. Peter
-export const john_bookname: bookset = ['JN']; // TODO: Handle 1. John and 2. John and 3. John
+export const peter: ordinal_bookset = ['PE'];
+export const john_epistles: ordinal_bookset = ['JN'];
 export const jude: bookset = ['JUD'];
 export const revelation: bookset = ['REV'];
 
@@ -103,12 +103,12 @@ export const susanna: bookset = ['SUS'];
  * Sometimes included in Greek Daniel; called "Rest of
 Daniel" in Ethiopia 
  */
-export const bel_and_the_dragon: bookset = ['BEL'];
+export const bel_and_the_dragon: bookset = ['BEL']; // TODO: Handle this exceptional case
 
 /**
  * For orthodox and catholic bibles
  */
-export const maccabees_bookname: bookset = ['MA']; // TODO: Handle 1. Maccabees, 2. Maccabees, 3. Maccabees and 4. Maccabees
+export const maccabees: ordinal_bookset = ['MA'];
 
 /**
  * 1 esdras (greek -> The 9 chapter book of Greek Ezra in the LXX, called 2
@@ -118,7 +118,7 @@ Vulgate; when Ezra-Nehemiah is one book use EZR
 Russian Bibles and called 4 Esdras in the Vulgate; for
 the 12 chapter Apocalypse of Ezra use EZA
  */
-export const esdras_bookname: bookset = ['ES']; // TODO: Handle 1. Esdras and 2. Esdras
+export const esdras: ordinal_bookset = ['ES'];
 
 /**
  * Sometimes appended to 2 Chronicles, included in
@@ -157,7 +157,7 @@ export const psalms_of_solomon: bookset = ['PSS'];
 Baruch in Ethiopia; may include or exclude the Letter
 of Jeremiah as chapter 1, used in the Ethiopian Bible 
  */
-export const baruch_bookname: bookset = ['BA']; // TODO: Handle 2 Baruch and 4 Baruch
+export const baruch_epistles: ordinal_bookset = ['BA']; // TODO: Handle 2 Baruch and 4 Baruch
 
 /**
  * Sometimes appended to 2 Baruch; sometimes separate
@@ -180,7 +180,7 @@ export const enoch: bookset = ['ENO'];
  * 2 Meqabyan -> Book of Mekabis of Moab in the Ethiopian Bible
  * 3 Meqabyan -> Book of Meqabyan in the Ethiopian Bible
  */
-export const meqabyan_bookname: bookset = ['MQ'];
+export const meqabyan: ordinal_bookset = ['MQ'];
 
 /**
  * Proverbs part 2: Used in the Ethiopian Bible

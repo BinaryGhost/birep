@@ -1,10 +1,13 @@
 import { BaseLexer, type Token } from './lexing';
+import type { Error } from './errors';
 import type { StandardForm } from './output-interfaces';
+import type { WordedBookNode } from './book-type';
 
 interface parser_essentials {
 	current(): Token | undefined;
 	peek(): Token | undefined;
 	consume(): void;
+	parseWordedBookname(ref_trie: WordedBookNode): Error;
 }
 
 export class Parser implements parser_essentials {
@@ -40,5 +43,9 @@ export class Parser implements parser_essentials {
 
 	consume(): void {
 		this.index++;
+	}
+
+	parseWordedBookname(ref_trie: WordedBookNode): Error {
+		return { heading: '', possible_fixes: [] };
 	}
 }

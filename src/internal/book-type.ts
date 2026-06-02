@@ -5,7 +5,17 @@ export type index_ordinal_bookset = Set<string>;
 export type ordinal_bookset = string[]; // In order to differentate it better
 export type bookset = string[];
 
-enum possible_ordinal_books {
+/**
+ * Single word synonyms are stored as keys of "synonym/synonym2/synonym3"
+ *
+ * "_else" can be used as default-value, if all the other
+ * conditions failed.
+ */
+export type WordedBookNode = {
+	[word: string | '_else']: WordedBookNode | t_ordinal_book | t_book;
+};
+
+export enum possible_ordinal_books {
 	Kings,
 	Samuel,
 	Chronicles,
@@ -21,12 +31,7 @@ enum possible_ordinal_books {
 	Meqabyan,
 }
 
-export type t_ordinal_book = {
-	book: possible_ordinal_books;
-	ordinal_appearance: 'before_book' | 'after_book';
-};
-
-enum possible_books {
+export enum possible_books {
 	Genesis,
 	Exodus,
 	Leviticus,
@@ -98,207 +103,213 @@ enum possible_books {
 	Letter_To_The_Laodiceans,
 }
 
+export type t_ordinal_book = {
+	book: possible_ordinal_books;
+	is_apocrpyhal: boolean;
+	ordinal: number;
+};
+
 export type t_book = {
 	book: possible_books;
 	is_apocrpyhal: boolean;
 };
 
 export class ToOrdinalRepresentation {
-	english(num: number, ord: t_ordinal_book): string | undefined {
-		switch (ord.book) {
+	english(ord_book: t_ordinal_book): string | undefined {
+		switch (ord_book.book) {
 			case possible_ordinal_books.Baruch:
-				if (num === 0) {
+				if (ord_book.ordinal === 0) {
 					return 'Baruch';
 				}
 
-				if (num !== 2 && num !== 4) {
+				if (ord_book.ordinal !== 2 && ord_book.ordinal !== 4) {
 					return undefined;
 				}
 
-				return `${num} Baruch`;
+				return `${ord_book.ordinal} Baruch`;
 			case possible_ordinal_books.Esdras:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num}ES`;
+				return `${ord_book.ordinal}ES`;
 			case possible_ordinal_books.Chronicles:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num} Chronicles`;
+				return `${ord_book.ordinal} Chronicles`;
 			case possible_ordinal_books.Corinthians:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num} Corinthians`;
+				return `${ord_book.ordinal} Corinthians`;
 			case possible_ordinal_books.Kings:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num} Kings`;
+				return `${ord_book.ordinal} Kings`;
 			case possible_ordinal_books.Samuel:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num} Samuel`;
+				return `${ord_book.ordinal} Samuel`;
 			case possible_ordinal_books.John:
-				if (num < 1 || num > 3) {
+				if (ord_book.ordinal < 1 || ord_book.ordinal > 3) {
 					return undefined;
 				}
 
-				return `${num} John`;
+				return `${ord_book.ordinal} John`;
 			case possible_ordinal_books.Maccabees:
-				if (num < 1 || num > 5) {
+				if (ord_book.ordinal < 1 || ord_book.ordinal > 5) {
 					return undefined;
 				}
 
-				return `${num} Maccabees`;
+				return `${ord_book.ordinal} Maccabees`;
 			case possible_ordinal_books.Meqabyan:
-				if (num < 1 || num > 5) {
+				if (ord_book.ordinal < 1 || ord_book.ordinal > 5) {
 					return undefined;
 				}
 
-				return `${num} Meqabyan`;
+				return `${ord_book.ordinal} Meqabyan`;
 			case possible_ordinal_books.Moses:
-				if (num === 1) {
+				if (ord_book.ordinal === 1) {
 					return 'Genesis';
-				} else if (num === 2) {
+				} else if (ord_book.ordinal === 2) {
 					return 'Exodus';
-				} else if (num === 3) {
+				} else if (ord_book.ordinal === 3) {
 					return 'Leviticus';
-				} else if (num === 4) {
-					return 'Numbers';
-				} else if (num === 5) {
+				} else if (ord_book.ordinal === 4) {
+					return 'ord_book.ordinalbers';
+				} else if (ord_book.ordinal === 5) {
 					return 'Deuteronomy';
 				} else {
 					return undefined;
 				}
 			case possible_ordinal_books.Peter:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num} Peter`;
+				return `${ord_book.ordinal} Peter`;
 			case possible_ordinal_books.Thessalonians:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num} Thessalonians`;
+				return `${ord_book.ordinal} Thessalonians`;
 			case possible_ordinal_books.Timothy:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num} Timothy`;
+				return `${ord_book.ordinal} Timothy`;
 			default:
 				return undefined;
 		}
 	}
 
-	paratext(num: number, ord: t_ordinal_book): string | undefined {
-		switch (ord.book) {
+	paratext(ord_book: t_ordinal_book): string | undefined {
+		switch (ord_book.book) {
 			case possible_ordinal_books.Baruch:
-				if (num === 0) {
+				if (ord_book.ordinal === 0) {
 					return 'BAR';
 				}
 
-				if (num !== 2 && num !== 4) {
+				if (ord_book.ordinal !== 2 && ord_book.ordinal !== 4) {
 					return undefined;
 				}
 
-				return `${num}BA`;
+				return `${ord_book.ordinal}BA`;
 			case possible_ordinal_books.Esdras:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num}ES`;
+				return `${ord_book.ordinal}ES`;
 			case possible_ordinal_books.Chronicles:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num}CH`;
+				return `${ord_book.ordinal}CH`;
 			case possible_ordinal_books.Corinthians:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num}CO`;
+				return `${ord_book.ordinal}CO`;
 			case possible_ordinal_books.Kings:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num}KI`;
+				return `${ord_book.ordinal}KI`;
 			case possible_ordinal_books.Samuel:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num}SA`;
+				return `${ord_book.ordinal}SA`;
 			case possible_ordinal_books.John:
-				if (num < 1 || num > 3) {
+				if (ord_book.ordinal < 1 || ord_book.ordinal > 3) {
 					return undefined;
 				}
 
-				return `${num}JN`;
+				return `${ord_book.ordinal}JN`;
 			case possible_ordinal_books.Maccabees:
-				if (num < 1 || num > 5) {
+				if (ord_book.ordinal < 1 || ord_book.ordinal > 5) {
 					return undefined;
 				}
 
-				return `${num}MA`;
+				return `${ord_book.ordinal}MA`;
 			case possible_ordinal_books.Meqabyan:
-				if (num < 1 || num > 5) {
+				if (ord_book.ordinal < 1 || ord_book.ordinal > 5) {
 					return undefined;
 				}
 
-				return `${num}MQ`;
+				return `${ord_book.ordinal}MQ`;
 			case possible_ordinal_books.Moses:
-				if (num === 1) {
+				if (ord_book.ordinal === 1) {
 					return 'GEN';
-				} else if (num === 2) {
+				} else if (ord_book.ordinal === 2) {
 					return 'EXO';
-				} else if (num === 3) {
+				} else if (ord_book.ordinal === 3) {
 					return 'LEV';
-				} else if (num === 4) {
-					return 'NUM';
-				} else if (num === 5) {
+				} else if (ord_book.ordinal === 4) {
+					return 'ord_book.ordinal';
+				} else if (ord_book.ordinal === 5) {
 					return 'DEU';
 				} else {
 					return undefined;
 				}
 			case possible_ordinal_books.Peter:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num}PE`;
+				return `${ord_book.ordinal}PE`;
 			case possible_ordinal_books.Thessalonians:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num}TH`;
+				return `${ord_book.ordinal}TH`;
 			case possible_ordinal_books.Timothy:
-				if (num !== 1 && num !== 2) {
+				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
 					return undefined;
 				}
 
-				return `${num}TI`;
+				return `${ord_book.ordinal}TI`;
 			default:
 				return undefined;
 		}
 	}
 
-	_native_(num: number, ord: t_ordinal_book): string | undefined {
+	_native_(ord_book: t_ordinal_book): string | undefined {
 		return '';
 	}
 }
