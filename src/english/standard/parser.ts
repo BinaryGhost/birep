@@ -4,7 +4,12 @@ import type { Token } from '../../internal/lexing';
 import { standard_style } from './lang';
 import * as booki from './book-index';
 import * as repr from './representation';
-import { possible_ordinal_books, type WordedBookNode } from '../../internal/book-type';
+import {
+	possible_ordinal_books,
+	type t_book,
+	type t_ordinal_book,
+	type WordedBookNode,
+} from '../../internal/book-type';
 import { english_standard_ordinals_representation } from './representation';
 
 // function parseReference() {}
@@ -230,43 +235,43 @@ export class StandardEnglishParser extends Parser {
 		if (booki.johns_epistles.has(next_tok.representation)) {
 			representation = english_standard_ordinals_representation.english({
 				book: possible_ordinal_books.John,
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 				ordinal: ordinalness,
 			});
 		} else if (booki.peter.has(next_tok.representation)) {
 			representation = english_standard_ordinals_representation.english({
 				book: possible_ordinal_books.Peter,
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 				ordinal: ordinalness,
 			});
 		} else if (booki.timothy.has(next_tok.representation)) {
 			representation = english_standard_ordinals_representation.english({
 				book: possible_ordinal_books.Timothy,
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 				ordinal: ordinalness,
 			});
 		} else if (booki.thessalonians.has(next_tok.representation)) {
 			representation = english_standard_ordinals_representation.english({
 				book: possible_ordinal_books.Thessalonians,
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 				ordinal: ordinalness,
 			});
 		} else if (booki.corinthians.has(next_tok.representation)) {
 			representation = english_standard_ordinals_representation.english({
 				book: possible_ordinal_books.Corinthians,
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 				ordinal: ordinalness,
 			});
 		} else if (booki.chronicles.has(next_tok.representation)) {
 			representation = english_standard_ordinals_representation.english({
 				book: possible_ordinal_books.Chronicles,
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 				ordinal: ordinalness,
 			});
 		} else if (booki.samuel.has(next_tok.representation)) {
 			representation = english_standard_ordinals_representation.english({
 				book: possible_ordinal_books.Samuel,
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 				ordinal: ordinalness,
 			});
 		} else {
@@ -278,8 +283,88 @@ export class StandardEnglishParser extends Parser {
 		return null;
 	}
 
-	override parseWordedBookname(ref_trie: WordedBookNode): Error {
-		const first_word = this.current()?.representation.toLocaleLowerCase();
-		return null;
+	override parseWordedBookname(
+		ref_trie: WordedBookNode | undefined,
+	): Success<t_book | t_ordinal_book> {
+		if (!ref_trie) {
+			// No trie given
+			return {
+				t: { book: 0, is_apocryphal: false },
+				e: { heading: '', possible_fixes: [] },
+			};
+		}
+
+		let current_node: WordedBookNode | undefined = ref_trie;
+
+		while (this.index < this.source_tokens.length) {
+			const current_word = this.current()?.representation.toLocaleLowerCase();
+			if (!current_word) break;
+
+			if (current_node[current_word]) {
+				current_node = current_node[current_word] as WordedBookNode;
+				this.consume();
+			} else if ('_else' in current_node) {
+				current_node = current_node['_else'] as WordedBookNode;
+				this.consume();
+			} else if ('ordinal' in current_node) {
+				return {
+					t: {
+						book: (current_node as unknown as t_ordinal_book).book,
+						is_apocryphal: (current_node as unknown as t_ordinal_book).is_apocryphal,
+						ordinal: (current_node as unknown as t_ordinal_book).ordinal,
+					},
+					e: null,
+				};
+			} else if ('book' in current_node) {
+				return {
+					t: {
+						book: (current_node as unknown as t_book).book,
+						is_apocryphal: (current_node as unknown as t_book).is_apocryphal,
+					},
+					e: null,
+				};
+			} else {
+				// Did not find anything...
+				const all_keys = Object.keys(current_node).filter((key) => key.includes('/'));
+
+				let found_it: number | undefined = undefined;
+				for (let i = 0; i < all_keys.length; i++) {
+					const key = all_keys[i] as string;
+
+					const words = key?.split('/');
+
+					for (let j = 0; j < words?.length; j++) {
+						if (words[j] === current_word) {
+							found_it = i;
+						}
+					}
+				}
+
+				if (found_it === undefined) {
+					// Truly nothing could be found with that word
+					return {
+						t: { book: 0, is_apocryphal: false },
+						e: { heading: '', possible_fixes: [] },
+					};
+				}
+
+				const found_key = all_keys[found_it];
+				if (found_key === undefined) {
+					// Idk why it would happen
+					return {
+						t: { book: 0, is_apocryphal: false },
+						e: { heading: '', possible_fixes: [] },
+					};
+				}
+
+				current_node = current_node[found_key] as WordedBookNode;
+			}
+		}
+
+		// Did not find anything...
+		return {
+			t: { book: 0, is_apocryphal: false },
+			e: { heading: '', possible_fixes: [] },
+		};
 	}
 }

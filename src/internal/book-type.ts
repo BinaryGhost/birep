@@ -105,13 +105,13 @@ export enum possible_books {
 
 export type t_ordinal_book = {
 	book: possible_ordinal_books;
-	is_apocrpyhal: boolean;
+	is_apocryphal: boolean;
 	ordinal: number;
 };
 
 export type t_book = {
 	book: possible_books;
-	is_apocrpyhal: boolean;
+	is_apocryphal: boolean;
 };
 
 export class ToOrdinalRepresentation {

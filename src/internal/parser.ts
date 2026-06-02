@@ -1,18 +1,18 @@
 import { BaseLexer, type Token } from './lexing';
-import type { Error } from './errors';
+import type { Success } from './errors';
 import type { StandardForm } from './output-interfaces';
 import type { WordedBookNode } from './book-type';
+import type { t_book, t_ordinal_book } from './book-type';
 
 interface parser_essentials {
 	current(): Token | undefined;
 	peek(): Token | undefined;
 	consume(): void;
-	parseWordedBookname(ref_trie: WordedBookNode): Error;
 }
 
 export class Parser implements parser_essentials {
-	private index: number = 0;
-	private source_tokens: Token[] = [];
+	protected index: number = 0;
+	protected source_tokens: Token[] = [];
 
 	gathered_ordinal_abbrs: Set<string> = new Set([]);
 	gathered_ordinal_words: Set<string> = new Set([]);
@@ -45,7 +45,10 @@ export class Parser implements parser_essentials {
 		this.index++;
 	}
 
-	parseWordedBookname(ref_trie: WordedBookNode): Error {
-		return { heading: '', possible_fixes: [] };
+	parseWordedBookname(ref_trie: WordedBookNode | undefined): Success<t_book | t_ordinal_book> {
+		return {
+			t: { book: 0, is_apocryphal: false },
+			e: { heading: '', possible_fixes: [] },
+		};
 	}
 }

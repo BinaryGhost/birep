@@ -9,38 +9,38 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 		of: {
 			matthew: {
 				book: possible_books.Matthew,
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 			},
 			mark: {
 				book: possible_books.Mark,
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 			},
 			luke: {
 				book: possible_books.Luke,
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 			},
 			john: {
 				book: possible_books.John,
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 			},
 		},
 		according: {
 			to: {
 				matthew: {
 					book: possible_books.Matthew,
-					is_apocrpyhal: false,
+					is_apocryphal: false,
 				},
 				mark: {
 					book: possible_books.Mark,
-					is_apocrpyhal: false,
+					is_apocryphal: false,
 				},
 				luke: {
 					book: possible_books.Luke,
-					is_apocrpyhal: false,
+					is_apocryphal: false,
 				},
 				john: {
 					book: possible_books.John,
-					is_apocrpyhal: false,
+					is_apocryphal: false,
 				},
 			},
 		},
@@ -50,7 +50,7 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 			of: {
 				revelation: {
 					book: possible_books.Revelation,
-					is_apocrpyhal: false,
+					is_apocryphal: false,
 				},
 			},
 		},
@@ -58,7 +58,7 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 			of: {
 				john: {
 					book: possible_books.Revelation,
-					is_apocrpyhal: false,
+					is_apocryphal: false,
 				},
 			},
 		},
@@ -69,23 +69,23 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 						the: {
 							colossians: {
 								book: possible_books.Colossians,
-								is_apocrpyhal: false,
+								is_apocryphal: false,
 							},
 							galatians: {
 								book: possible_books.Galatians,
-								is_apocrpyhal: false,
+								is_apocryphal: false,
 							},
 							ephesians: {
 								book: possible_books.Ephesians,
-								is_apocrpyhal: false,
+								is_apocryphal: false,
 							},
 							philippians: {
 								book: possible_books.Philippians,
-								is_apocrpyhal: false,
+								is_apocryphal: false,
 							},
 							romans: {
 								book: possible_books.Romans,
-								is_apocrpyhal: false,
+								is_apocryphal: false,
 							},
 						},
 					},
@@ -95,23 +95,23 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 								the: {
 									colossians: {
 										book: possible_books.Colossians,
-										is_apocrpyhal: false,
+										is_apocryphal: false,
 									},
 									galatians: {
 										book: possible_books.Galatians,
-										is_apocrpyhal: false,
+										is_apocryphal: false,
 									},
 									ephesians: {
 										book: possible_books.Ephesians,
-										is_apocrpyhal: false,
+										is_apocryphal: false,
 									},
 									philippians: {
 										book: possible_books.Philippians,
-										is_apocrpyhal: false,
+										is_apocryphal: false,
 									},
 									romans: {
 										book: possible_books.Romans,
-										is_apocrpyhal: false,
+										is_apocryphal: false,
 									},
 								},
 							},
@@ -123,23 +123,23 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 				the: {
 					colossians: {
 						book: possible_books.Colossians,
-						is_apocrpyhal: false,
+						is_apocryphal: false,
 					},
 					galatians: {
 						book: possible_books.Galatians,
-						is_apocrpyhal: false,
+						is_apocryphal: false,
 					},
 					ephesians: {
 						book: possible_books.Ephesians,
-						is_apocrpyhal: false,
+						is_apocryphal: false,
 					},
 					philippians: {
 						book: possible_books.Philippians,
-						is_apocrpyhal: false,
+						is_apocryphal: false,
 					},
 					romans: {
 						book: possible_books.Romans,
-						is_apocrpyhal: false,
+						is_apocryphal: false,
 					},
 				},
 			},
@@ -151,14 +151,14 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 						apostle: {
 							john: {
 								book: possible_ordinal_books.John,
-								is_apocrpyhal: false,
+								is_apocryphal: false,
 								ordinal: 1,
 							},
 						},
 					},
 					john: {
 						book: possible_ordinal_books.John,
-						is_apocrpyhal: false,
+						is_apocryphal: false,
 						ordinal: 1,
 					},
 					paul: {
@@ -167,17 +167,17 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 								to: {
 									the: {
 										thessalonians: {
-											is_apocrpyhal: false,
+											is_apocryphal: false,
 											book: possible_ordinal_books.Thessalonians,
 											ordinal: 2,
 										},
 										timothy: {
-											is_apocrpyhal: false,
+											is_apocryphal: false,
 											book: possible_ordinal_books.Timothy,
 											ordinal: 2,
 										},
 										corinthians: {
-											is_apocrpyhal: false,
+											is_apocryphal: false,
 											book: possible_ordinal_books.Corinthians,
 											ordinal: 2,
 										},
@@ -188,17 +188,17 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 						to: {
 							the: {
 								thessalonians: {
-									is_apocrpyhal: false,
+									is_apocryphal: false,
 									book: possible_ordinal_books.Thessalonians,
 									ordinal: 1,
 								},
 								timothy: {
-									is_apocrpyhal: false,
+									is_apocryphal: false,
 									book: possible_ordinal_books.Timothy,
 									ordinal: 1,
 								},
 								corinthians: {
-									is_apocrpyhal: false,
+									is_apocryphal: false,
 									book: possible_ordinal_books.Corinthians,
 									ordinal: 1,
 								},
@@ -214,14 +214,14 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 					the: {
 						apostle: {
 							john: {
-								is_apocrpyhal: false,
+								is_apocryphal: false,
 								book: possible_ordinal_books.John,
 								ordinal: 2,
 							},
 						},
 					},
 					john: {
-						is_apocrpyhal: false,
+						is_apocryphal: false,
 						book: possible_ordinal_books.John,
 						ordinal: 2,
 					},
@@ -231,17 +231,17 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 								to: {
 									the: {
 										thessalonians: {
-											is_apocrpyhal: false,
+											is_apocryphal: false,
 											book: possible_ordinal_books.Thessalonians,
 											ordinal: 2,
 										},
 										timothy: {
-											is_apocrpyhal: false,
+											is_apocryphal: false,
 											book: possible_ordinal_books.Timothy,
 											ordinal: 2,
 										},
 										corinthians: {
-											is_apocrpyhal: false,
+											is_apocryphal: false,
 											book: possible_ordinal_books.Corinthians,
 											ordinal: 2,
 										},
@@ -252,17 +252,17 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 						to: {
 							the: {
 								thessalonians: {
-									is_apocrpyhal: false,
+									is_apocryphal: false,
 									book: possible_ordinal_books.Thessalonians,
 									ordinal: 2,
 								},
 								timothy: {
-									is_apocrpyhal: false,
+									is_apocryphal: false,
 									book: possible_ordinal_books.Timothy,
 									ordinal: 2,
 								},
 								corinthians: {
-									is_apocrpyhal: false,
+									is_apocryphal: false,
 									book: possible_ordinal_books.Corinthians,
 									ordinal: 2,
 								},
@@ -279,13 +279,13 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 						apostle: {
 							john: {
 								book: possible_ordinal_books.John,
-								is_apocrpyhal: false,
+								is_apocryphal: false,
 								ordinal: 3,
 							},
 						},
 					},
 					john: {
-						is_apocrpyhal: false,
+						is_apocryphal: false,
 						book: possible_ordinal_books.John,
 						ordinal: 3,
 					},
@@ -299,14 +299,14 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 				'three/3': {
 					young: {
 						men: {
-							is_apocrpyhal: true,
+							is_apocryphal: true,
 							book: possible_books.Song_Of_The_Three_Young_Men,
 						},
 					},
 				},
 			},
 			solomon: {
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 				book: possible_books.Songs_of_Solomon,
 			},
 		},
@@ -314,7 +314,7 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 	canticle: {
 		of: {
 			canticles: {
-				is_apocrpyhal: false,
+				is_apocryphal: false,
 				book: possible_books.Songs_of_Solomon,
 			},
 		},
@@ -322,12 +322,12 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 	wisdom: {
 		of: {
 			solomon: {
-				is_apocrpyhal: true,
+				is_apocryphal: true,
 				book: possible_books.Wisdom_Of_Solomon,
 			},
 		},
 		_else: {
-			is_apocrpyhal: true,
+			is_apocryphal: true,
 			book: possible_books.Wisdom_Of_Solomon,
 		},
 	},
@@ -335,7 +335,7 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 		and: {
 			the: {
 				dragon: {
-					is_apocrpyhal: true,
+					is_apocryphal: true,
 					book: possible_books.Bel_And_The_Dragon,
 				},
 			},
@@ -344,22 +344,22 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 	letter: {
 		of: {
 			jeremiah: {
-				is_apocrpyhal: true,
+				is_apocryphal: true,
 				book: possible_books.Letter_Of_Jeremiah,
 			},
 			daniel: {
-				is_apocrpyhal: true,
+				is_apocryphal: true,
 				book: possible_books.Bel_And_The_Dragon,
 			},
 			baruch: {
-				is_apocrpyhal: true,
+				is_apocryphal: true,
 				book: possible_books.Letter_Of_Baruch,
 			},
 		},
 		to: {
 			the: {
 				laodiceans: {
-					is_apocrpyhal: true,
+					is_apocryphal: true,
 					book: possible_books.Letter_To_The_Laodiceans,
 				},
 			},
@@ -368,11 +368,11 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 	rest: {
 		of: {
 			jeremiah: {
-				is_apocrpyhal: true,
+				is_apocryphal: true,
 				book: possible_books.Letter_Of_Jeremiah,
 			},
 			daniel: {
-				is_apocrpyhal: true,
+				is_apocryphal: true,
 				book: possible_books.Bel_And_The_Dragon,
 			},
 		},
@@ -380,7 +380,7 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 	prayer: {
 		of: {
 			manasseh: {
-				is_apocrpyhal: true,
+				is_apocryphal: true,
 				book: possible_books.Prayer_Of_Manasseh,
 			},
 		},
@@ -388,18 +388,18 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 	s: {
 		'3': {
 			y: {
-				is_apocrpyhal: true,
+				is_apocryphal: true,
 				book: possible_books.Song_Of_The_Three_Young_Men,
 			},
 		},
 	},
 	ps: {
 		'2': {
-			is_apocrpyhal: true,
+			is_apocryphal: true,
 			book: possible_books.Psalm_151,
 		},
 		'3': {
-			is_apocrpyhal: true,
+			is_apocryphal: true,
 			book: possible_books.Psalms_152_To_155,
 		},
 	},
