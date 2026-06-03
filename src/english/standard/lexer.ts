@@ -13,39 +13,39 @@ export class EnglishStandardLexer extends BaseLexer {
 			if (char === ' ' || char === '\t' || char === '\n' || char === '\r') {
 				i++;
 				continue;
-			} else if (char in standard_style.allowed_verse_seperators) {
+			} else if (standard_style.allowed_verse_seperators.includes(char)) {
 				this.token_list.push({ kind: 'verse-seperator', representation: char, pos: i });
 				i++;
-			} else if (char in standard_style.allowed_chapter_delimiters) {
+			} else if (standard_style.allowed_chapter_delimiters.includes(char)) {
 				this.token_list.push({ kind: 'chapter-delimiter', representation: char, pos: i });
 				i++;
-			} else if (char in standard_style.allowed_range_characters) {
+			} else if (standard_style.allowed_range_characters.includes(char)) {
 				this.token_list.push({ kind: 'range-char', representation: char, pos: i });
 				i++;
-			} else if (char in standard_style.allowed_book_delimiters) {
+			} else if (standard_style.allowed_book_delimiters.includes(char)) {
 				this.token_list.push({ kind: 'book-delimiter', representation: char, pos: i });
 				i++;
-			} else if (char in standard_style.allowed_chapter_verse_seperators) {
+			} else if (standard_style.allowed_chapter_verse_seperators.includes(char)) {
 				this.token_list.push({
 					kind: 'chapter-verse-seperator',
 					representation: char,
 					pos: i,
 				});
 				i++;
-			} else if (char in standard_style.allowed_number_sets) {
+			} else if (standard_style.allowed_number_sets.has(char)) {
 				let num_str = char;
 				let j = i + 1;
-				while (j < input.length && (input[j] as string) in standard_style.allowed_number_sets) {
+				while (j < input.length && standard_style.allowed_number_sets.has(input[j] as string)) {
 					num_str += input[j];
 					j++;
 				}
 
 				this.token_list.push({ kind: 'num', representation: num_str, pos: i });
 				i = j;
-			} else if (char in standard_style.allowed_character_sets) {
+			} else if (standard_style.allowed_character_sets.has(char)) {
 				let ident_str = char;
 				let j = i + 1;
-				while (j < input.length && (input[j] as string) in standard_style.allowed_character_sets) {
+				while (j < input.length && standard_style.allowed_character_sets.has(input[j] as string)) {
 					ident_str += input[j];
 					j++;
 				}
@@ -54,6 +54,7 @@ export class EnglishStandardLexer extends BaseLexer {
 				i = j;
 			} else {
 				// TODO: Handle Invalid Character Error here
+				break;
 			}
 		}
 
