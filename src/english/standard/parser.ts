@@ -297,34 +297,13 @@ export class StandardEnglishParser extends Parser {
 		let current_node: WordedBookNode | undefined = ref_trie;
 
 		while (this.index < this.source_tokens.length) {
-			const current_word = this.current()?.representation.toLocaleLowerCase();
+			const current_word = this.current()?.representation.toLowerCase();
 			if (!current_word) break;
 
 			if (current_node[current_word]) {
 				current_node = current_node[current_word] as WordedBookNode;
 				this.consume();
-			} else if ('_else' in current_node) {
-				current_node = current_node['_else'] as WordedBookNode;
-				this.consume();
-			} else if ('ordinal' in current_node) {
-				return {
-					t: {
-						book: (current_node as unknown as t_ordinal_book).book,
-						is_apocryphal: (current_node as unknown as t_ordinal_book).is_apocryphal,
-						ordinal: (current_node as unknown as t_ordinal_book).ordinal,
-					},
-					e: null,
-				};
-			} else if ('book' in current_node) {
-				return {
-					t: {
-						book: (current_node as unknown as t_book).book,
-						is_apocryphal: (current_node as unknown as t_book).is_apocryphal,
-					},
-					e: null,
-				};
 			} else {
-				// Did not find anything...
 				const all_keys = Object.keys(current_node).filter((key) => key.includes('/'));
 
 				let found_it: number | undefined = undefined;
@@ -334,34 +313,82 @@ export class StandardEnglishParser extends Parser {
 					const words = key?.split('/');
 
 					for (let j = 0; j < words?.length; j++) {
-						if (words[j] === current_word) {
+						if (words[j]?.trim() === current_word) {
 							found_it = i;
+							break;
 						}
 					}
+
+					if (found_it !== undefined) break;
 				}
 
-				if (found_it === undefined) {
-					// Truly nothing could be found with that word
+				if (found_it !== undefined) {
+					const found_key = all_keys[found_it];
+					if (found_key === undefined) {
+						return {
+							t: { book: 0, is_apocryphal: false },
+							e: { heading: '', possible_fixes: [] },
+						};
+					}
+
+					current_node = current_node[found_key] as WordedBookNode;
+					this.consume();
+				} else if (current_node['_else']) {
+					current_node = current_node['_else'] as WordedBookNode;
+					this.consume();
+				} else {
 					return {
 						t: { book: 0, is_apocryphal: false },
 						e: { heading: '', possible_fixes: [] },
 					};
 				}
+			}
 
-				const found_key = all_keys[found_it];
-				if (found_key === undefined) {
-					// Idk why it would happen
-					return {
-						t: { book: 0, is_apocryphal: false },
-						e: { heading: '', possible_fixes: [] },
-					};
-				}
-
-				current_node = current_node[found_key] as WordedBookNode;
+			if (current_node['ordinal']) {
+				return {
+					t: {
+						book: (current_node as unknown as t_ordinal_book).book,
+						is_apocryphal: (current_node as unknown as t_ordinal_book).is_apocryphal,
+						ordinal: (current_node as unknown as t_ordinal_book).ordinal,
+					},
+					e: null,
+				};
+			} else if (current_node['book']) {
+				return {
+					t: {
+						book: (current_node as unknown as t_book).book,
+						is_apocryphal: (current_node as unknown as t_book).is_apocryphal,
+					},
+					e: null,
+				};
 			}
 		}
 
-		// Did not find anything...
+		// If the worded-book has ended without resolving it...
+		// Like: Wisdom | Wisdom of Solomon
+
+		if (current_node['_else']) {
+			const else_node = current_node['_else'] as WordedBookNode;
+			if (else_node['ordinal']) {
+				return {
+					t: {
+						book: (else_node as unknown as t_ordinal_book).book,
+						is_apocryphal: (else_node as unknown as t_ordinal_book).is_apocryphal,
+						ordinal: (else_node as unknown as t_ordinal_book).ordinal,
+					},
+					e: null,
+				};
+			} else if (else_node['book']) {
+				return {
+					t: {
+						book: (else_node as unknown as t_book).book,
+						is_apocryphal: (else_node as unknown as t_book).is_apocryphal,
+					},
+					e: null,
+				};
+			}
+		}
+
 		return {
 			t: { book: 0, is_apocryphal: false },
 			e: { heading: '', possible_fixes: [] },

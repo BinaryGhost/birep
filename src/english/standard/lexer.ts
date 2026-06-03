@@ -2,7 +2,7 @@ import type { Token } from '../../internal/lexing';
 import { BaseLexer } from '../../internal/lexing';
 import { standard_style } from './lang';
 
-export class EnglishStandardLexer extends BaseLexer {
+export class StandardEnglishLexer extends BaseLexer {
 	override token_list: Token[] = [];
 	constructor(input: string) {
 		super();
