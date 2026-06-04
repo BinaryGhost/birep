@@ -45,10 +45,12 @@ export class Parser implements parser_essentials {
 		this.index++;
 	}
 
-	parseWordedBookname(ref_trie: WordedBookNode | undefined): Success<t_book | t_ordinal_book> {
+	parseWordedBookname(
+		ref_trie: WordedBookNode | undefined,
+	): Success<t_book | t_ordinal_book | null> {
 		return {
 			t: { book: 0, is_apocryphal: false },
-			e: { heading: '', possible_fixes: [] },
+			e: null,
 		};
 	}
 }

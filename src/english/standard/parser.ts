@@ -1,10 +1,9 @@
 import { Parser } from '../../internal/parser';
 import type { Error, Success } from '../../internal/errors';
-import type { Token } from '../../internal/lexing';
 import { standard_style } from './lang';
 import * as booki from './book-index';
-import * as repr from './representation';
 import {
+	isValidOrdinalBook,
 	possible_ordinal_books,
 	type t_book,
 	type t_ordinal_book,
@@ -33,25 +32,23 @@ export class StandardEnglishParser extends Parser {
 	);
 
 	parse(): Error {
-		let prev = this.current();
-		if (prev === undefined) {
-			return { heading: '', possible_fixes: [] };
-		}
-
-		this.consume();
-
 		let current = this.current();
 		if (current === undefined) {
 			return { heading: '', possible_fixes: [] };
 		}
 
+		let next = this.peek();
+		if (next === undefined) {
+			return { heading: '', possible_fixes: [] };
+		}
+
 		if (
-			(prev.kind === 'num' || this.gathered_ordinal_words.has(prev.representation)) &&
-			current.kind === 'ident'
+			(current.kind === 'num' || this.gathered_ordinal_words.has(current.representation)) &&
+			next.kind === 'ident'
 		) {
-			this.parseOrdinalBook(prev, current);
-		} else if (prev.kind === 'num' && current.kind !== 'num') {
-		} else if (prev.kind === 'ident') {
+			this.parseOrdinalBook();
+		} else if (current.kind === 'num' && next.kind !== 'num') {
+		} else if (current.kind === 'ident') {
 		} else {
 			return { heading: '', possible_fixes: [] };
 		}
@@ -113,24 +110,40 @@ export class StandardEnglishParser extends Parser {
 		return null;
 	}
 
-	private parse_ordinal_number(prev_tok: Token, curr_tok: Token): Success<number> {
-		if (standard_style.allowed_ordinal_words.first.includes(prev_tok.representation)) {
+	private parse_ordinal_number(): Success<number | null> {
+		const current = this.current();
+		if (current === undefined) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		}
+
+		const next = this.peek();
+		if (next === undefined) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		}
+
+		// First | Second ...
+		if (standard_style.allowed_ordinal_words.first.includes(current.representation)) {
+			this.consume();
 			return { t: 1, e: null };
-		} else if (standard_style.allowed_ordinal_words.second.includes(prev_tok.representation)) {
+		} else if (standard_style.allowed_ordinal_words.second.includes(current.representation)) {
+			this.consume();
 			return { t: 2, e: null };
-		} else if (standard_style.allowed_ordinal_words.third.includes(prev_tok.representation)) {
+		} else if (standard_style.allowed_ordinal_words.third.includes(current.representation)) {
+			this.consume();
 			return { t: 3, e: null };
-		} else if (standard_style.allowed_ordinal_words.fourth.includes(prev_tok.representation)) {
+		} else if (standard_style.allowed_ordinal_words.fourth.includes(current.representation)) {
+			this.consume();
 			return { t: 4, e: null };
-		} else if (standard_style.allowed_ordinal_words.fifth.includes(prev_tok.representation)) {
+		} else if (standard_style.allowed_ordinal_words.fifth.includes(current.representation)) {
+			this.consume();
 			return { t: 5, e: null };
 		} else if (
-			this.gathered_ordinal_words.has(prev_tok.representation) &&
-			this.gathered_ordinal_abbrs.has(curr_tok.representation)
+			this.gathered_ordinal_words.has(current.representation) &&
+			this.gathered_ordinal_abbrs.has(next.representation)
 		) {
 			// case -> First . | Second nd
 			return {
-				t: 0,
+				t: null,
 				e: {
 					heading: '',
 					possible_fixes: [],
@@ -138,158 +151,169 @@ export class StandardEnglishParser extends Parser {
 			};
 		}
 
-		if (prev_tok.kind !== 'num') {
-			return {
-				t: 0,
-				e: {
-					heading: '',
-					possible_fixes: [],
-				},
-			};
-		}
+		// if (next.kind !== 'num') {
+		// 	return {
+		// 		t: null,
+		// 		e: {
+		// 			heading: '',
+		// 			possible_fixes: [],
+		// 		},
+		// 	};
+		// }
 
-		let num_value = parseInt(prev_tok.representation);
+		let num_value = parseInt(current.representation);
 		if (isNaN(num_value)) {
 			return {
-				t: 0,
+				t: null,
 				e: { heading: '', possible_fixes: [] },
 			};
 		}
 
+		// 1st | 2nd
 		if (
 			num_value === 1 &&
-			standard_style.allowed_ordinal_abbrs.first.includes(curr_tok.representation)
+			standard_style.allowed_ordinal_abbrs.first.includes(next.representation)
 		) {
+			this.consume();
+			this.consume();
 			return {
 				t: 1,
 				e: null,
 			};
 		} else if (
 			num_value === 2 &&
-			standard_style.allowed_ordinal_abbrs.second.includes(curr_tok.representation)
+			standard_style.allowed_ordinal_abbrs.second.includes(next.representation)
 		) {
+			this.consume();
+			this.consume();
 			return {
 				t: 2,
 				e: null,
 			};
 		} else if (
 			num_value === 3 &&
-			standard_style.allowed_ordinal_abbrs.third.includes(curr_tok.representation)
+			standard_style.allowed_ordinal_abbrs.third.includes(next.representation)
 		) {
+			this.consume();
+			this.consume();
 			return {
 				t: 3,
 				e: null,
 			};
 		} else if (
 			num_value === 4 &&
-			standard_style.allowed_ordinal_abbrs.fourth.includes(curr_tok.representation)
+			standard_style.allowed_ordinal_abbrs.fourth.includes(next.representation)
 		) {
+			this.consume();
+			this.consume();
 			return {
 				t: 4,
 				e: null,
 			};
 		} else if (
 			num_value === 5 &&
-			standard_style.allowed_ordinal_abbrs.fifth.includes(curr_tok.representation)
+			standard_style.allowed_ordinal_abbrs.fifth.includes(next.representation)
 		) {
+			this.consume();
+			this.consume();
 			return {
 				t: 5,
 				e: null,
 			};
 		} else {
 			// Missmatch -> 1nd | 3st
+			this.consume();
 			return {
-				t: 0,
-				e: {
-					heading: '',
-					possible_fixes: [],
-				},
+				t: num_value,
+				e: null,
 			};
 		}
 	}
 
-	parseOrdinalBook(prev_tok: Token, curr_tok: Token): Error {
-		let result = this.parse_ordinal_number(prev_tok, curr_tok);
-
+	parseOrdinalBook(): Success<t_ordinal_book | null> {
 		let ordinalness: number;
+		let result = this.parse_ordinal_number();
 
-		if (result.e !== null) {
-			return result.e;
+		if (result.t === null) {
+			return { t: null, e: result.e };
 		} else {
 			ordinalness = result.t;
 		}
 
-		// Because of ordinals like 1st -> <num> <identfier>
-		if (prev_tok.kind === 'num') {
-			this.consume();
-		}
+		const current = this.current();
 
-		const next_tok = this.current();
-		if (next_tok === undefined || next_tok.kind !== 'ident') {
-			return { heading: '', possible_fixes: [] };
+		if (current === undefined || current.kind !== 'ident') {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
 		}
 
 		// TODO: Apocrypha currently unimplemented
 
-		let representation;
-		if (booki.johns_epistles.has(next_tok.representation)) {
-			representation = english_standard_ordinals_representation.english({
+		let representation: t_ordinal_book | undefined;
+		if (booki.johns_epistles.has(current.representation)) {
+			representation = {
 				book: possible_ordinal_books.John,
 				is_apocryphal: false,
 				ordinal: ordinalness,
-			});
-		} else if (booki.peter.has(next_tok.representation)) {
-			representation = english_standard_ordinals_representation.english({
+			};
+		} else if (booki.peter.has(current.representation)) {
+			representation = {
 				book: possible_ordinal_books.Peter,
 				is_apocryphal: false,
 				ordinal: ordinalness,
-			});
-		} else if (booki.timothy.has(next_tok.representation)) {
-			representation = english_standard_ordinals_representation.english({
+			};
+		} else if (booki.timothy.has(current.representation)) {
+			representation = {
 				book: possible_ordinal_books.Timothy,
 				is_apocryphal: false,
 				ordinal: ordinalness,
-			});
-		} else if (booki.thessalonians.has(next_tok.representation)) {
-			representation = english_standard_ordinals_representation.english({
+			};
+		} else if (booki.thessalonians.has(current.representation)) {
+			representation = {
 				book: possible_ordinal_books.Thessalonians,
 				is_apocryphal: false,
 				ordinal: ordinalness,
-			});
-		} else if (booki.corinthians.has(next_tok.representation)) {
-			representation = english_standard_ordinals_representation.english({
+			};
+		} else if (booki.corinthians.has(current.representation)) {
+			representation = {
 				book: possible_ordinal_books.Corinthians,
 				is_apocryphal: false,
 				ordinal: ordinalness,
-			});
-		} else if (booki.chronicles.has(next_tok.representation)) {
-			representation = english_standard_ordinals_representation.english({
+			};
+		} else if (booki.chronicles.has(current.representation)) {
+			representation = {
 				book: possible_ordinal_books.Chronicles,
 				is_apocryphal: false,
 				ordinal: ordinalness,
-			});
-		} else if (booki.samuel.has(next_tok.representation)) {
-			representation = english_standard_ordinals_representation.english({
+			};
+		} else if (booki.samuel.has(current.representation)) {
+			representation = {
 				book: possible_ordinal_books.Samuel,
 				is_apocryphal: false,
 				ordinal: ordinalness,
-			});
+			};
 		} else {
 			// Missmatch -> 5. Corinthians or Fourth Luke
 			// Or unimplemented (apocryphal) books
-			return { heading: '', possible_fixes: [] };
+			// Or 1 nd
+			return { t: null, e: { heading: '', possible_fixes: [] } };
 		}
 
-		return null;
+		if (representation === undefined) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		} else if (!isValidOrdinalBook(representation)) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		} else {
+			return { t: representation, e: null };
+		}
 	}
 
 	override parseWordedBookname(
 		ref_trie: WordedBookNode | undefined,
-	): Success<t_book | t_ordinal_book> {
+	): Success<t_book | t_ordinal_book | null> {
 		if (!ref_trie) {
 			// No trie given
 			return {
-				t: { book: 0, is_apocryphal: false },
+				t: null,
 				e: { heading: '', possible_fixes: [] },
 			};
 		}
@@ -326,7 +350,7 @@ export class StandardEnglishParser extends Parser {
 					const found_key = all_keys[found_it];
 					if (found_key === undefined) {
 						return {
-							t: { book: 0, is_apocryphal: false },
+							t: null,
 							e: { heading: '', possible_fixes: [] },
 						};
 					}
@@ -338,7 +362,7 @@ export class StandardEnglishParser extends Parser {
 					this.consume();
 				} else {
 					return {
-						t: { book: 0, is_apocryphal: false },
+						t: null,
 						e: { heading: '', possible_fixes: [] },
 					};
 				}
@@ -390,7 +414,7 @@ export class StandardEnglishParser extends Parser {
 		}
 
 		return {
-			t: { book: 0, is_apocryphal: false },
+			t: null,
 			e: { heading: '', possible_fixes: [] },
 		};
 	}

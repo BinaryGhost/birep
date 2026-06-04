@@ -9,4 +9,4 @@ interface BirepError {
 // Golang errors at home:
 export type Error = BirepError | null;
 
-export type Success<T> = { t: T; e: Error };
+export type Success<T> = T extends null ? { t: null; e: Error } : { t: T; e: null };

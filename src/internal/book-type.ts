@@ -310,7 +310,31 @@ export class ToOrdinalRepresentation {
 	}
 
 	_native_(ord_book: t_ordinal_book): string | undefined {
-		return '';
+		return undefined;
+	}
+}
+
+export function isValidOrdinalBook(ord_book: t_ordinal_book): boolean {
+	switch (ord_book.book) {
+		case possible_ordinal_books.Baruch:
+			return ord_book.ordinal === 2 || ord_book.ordinal === 4;
+		case possible_ordinal_books.Esdras:
+		case possible_ordinal_books.Chronicles:
+		case possible_ordinal_books.Corinthians:
+		case possible_ordinal_books.Kings:
+		case possible_ordinal_books.Samuel:
+		case possible_ordinal_books.Peter:
+		case possible_ordinal_books.Thessalonians:
+		case possible_ordinal_books.Timothy:
+			return ord_book.ordinal === 1 || ord_book.ordinal === 2;
+		case possible_ordinal_books.John:
+			return ord_book.ordinal >= 1 && ord_book.ordinal <= 3;
+		case possible_ordinal_books.Maccabees:
+		case possible_ordinal_books.Meqabyan:
+		case possible_ordinal_books.Moses:
+			return ord_book.ordinal >= 1 && ord_book.ordinal <= 5;
+		default:
+			return false;
 	}
 }
 
@@ -627,6 +651,6 @@ export class ToRepresentation {
 	}
 
 	_native_(bk: t_book, psalm_chapter_number?: number): string | undefined {
-		return '';
+		return undefined;
 	}
 }
