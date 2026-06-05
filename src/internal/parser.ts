@@ -1,8 +1,8 @@
 import { BaseLexer, type Token } from './lexing';
 import type { Success } from './errors';
 import type { StandardForm } from './output-interfaces';
-import type { WordedBookNode } from './book-type';
-import type { t_book, t_ordinal_book } from './book-type';
+import type { WordedBookNode } from './books/book-type';
+import type { t_book, t_ordinal_book } from './books/book-type';
 
 interface parser_essentials {
 	current(): Token | undefined;

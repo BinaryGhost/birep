@@ -2,7 +2,7 @@ import {
 	possible_books,
 	possible_ordinal_books,
 	type WordedBookNode,
-} from '../../internal/book-type';
+} from '../../internal/books/book-type';
 
 export const Standard_WordedBookTrie: WordedBookNode = {
 	'gospel/evangelion': {

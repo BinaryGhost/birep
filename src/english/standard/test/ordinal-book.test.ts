@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { StandardEnglishParser } from '../parser';
 import { StandardEnglishLexer } from '../lexer';
-import { possible_ordinal_books } from '../../../internal/book-type';
+import { possible_ordinal_books } from '../../../internal/books/book-type';
 
 describe('Recognise Ordinal Books', () => {
 	test('Wrong ordinal-ident', () => {

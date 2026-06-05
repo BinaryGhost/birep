@@ -1,5 +1,5 @@
-import { ToOrdinalRepresentation, ToRepresentation } from '../../internal/book-type';
-import type { t_book, t_ordinal_book } from '../../internal/book-type';
+import { ToOrdinalRepresentation, ToRepresentation } from '../../internal/books/book-type';
+import type { t_book, t_ordinal_book } from '../../internal/books/book-type';
 
 export class EnglishStandardOrdinalRepresentation extends ToOrdinalRepresentation {
 	override _native_(ord_book: t_ordinal_book): string | undefined {

@@ -3,12 +3,13 @@ import type { Error, Success } from '../../internal/errors';
 import { standard_style } from './lang';
 import * as booki from './book-index';
 import {
-	isValidOrdinalBook,
 	possible_ordinal_books,
 	type t_book,
+	type t_chapter,
 	type t_ordinal_book,
 	type WordedBookNode,
-} from '../../internal/book-type';
+} from '../../internal/books/book-type';
+import { isCorrectChapterOfBook, isValidOrdinalBook } from '../../internal/books/book-analysis';
 import { english_standard_ordinals_representation } from './representation';
 
 // function parseReference() {}
@@ -32,26 +33,26 @@ export class StandardEnglishParser extends Parser {
 	);
 
 	parse(): Error {
-		let current = this.current();
-		if (current === undefined) {
-			return { heading: '', possible_fixes: [] };
-		}
+		// let current = this.current();
+		// if (current === undefined) {
+		// 	return { heading: '', possible_fixes: [] };
+		// }
 
-		let next = this.peek();
-		if (next === undefined) {
-			return { heading: '', possible_fixes: [] };
-		}
+		// let next = this.peek();
+		// if (next === undefined) {
+		// 	return { heading: '', possible_fixes: [] };
+		// }
 
-		if (
-			(current.kind === 'num' || this.gathered_ordinal_words.has(current.representation)) &&
-			next.kind === 'ident'
-		) {
-			this.parseOrdinalBook();
-		} else if (current.kind === 'num' && next.kind !== 'num') {
-		} else if (current.kind === 'ident') {
-		} else {
-			return { heading: '', possible_fixes: [] };
-		}
+		// if (
+		// 	(current.kind === 'num' || this.gathered_ordinal_words.has(current.representation)) &&
+		// 	next.kind === 'ident'
+		// ) {
+		// 	this.parseOrdinalBook();
+		// } else if (current.kind === 'num' && next.kind !== 'num') {
+		// } else if (current.kind === 'ident') {
+		// } else {
+		// 	return { heading: '', possible_fixes: [] };
+		// }
 
 		// TODO: Handle all cases:
 		// ORDINALS => <num> + <identifier>
@@ -62,52 +63,70 @@ export class StandardEnglishParser extends Parser {
 		return null;
 	}
 
-	parseChapterNumber(): Error {
+	parseChapterNumber(what_book: t_ordinal_book | t_book): Success<t_chapter | null> {
 		let current = this.current();
 
-		if (current?.kind === 'EOL') {
-			return {
-				heading: 'No chapter',
-				possible_fixes: [
-					"Please mention any number (except 0) after the book's name",
-					'For a book atleast a chapter number has to be given in order to be valid',
-				],
-			};
-		}
+		// if (current?.kind === 'EOL') {
+		// 	return {
+		// 		t: null,
+		// 		e: {
+		// 			heading: 'No chapter',
+		// 			possible_fixes: [
+		// 				"Please mention any number (except 0) after the book's name",
+		// 				'For a book atleast a chapter number has to be given in order to be valid',
+		// 			],
+		// 		},
+		// 	};
+		// }
 
 		if (current?.kind !== 'num') {
 			return {
-				heading: 'Invalid Chapter-Number',
-				possible_fixes: [
-					'A chapter number has to be a number and can not be used as anything else',
-					`Do not use '${current?.representation}' at col ${current?.pos} as a number`,
-				],
+				t: null,
+				e: {
+					heading: 'Invalid Chapter-Number',
+					possible_fixes: [
+						'A chapter number has to be a number and can not be used as anything else',
+						`Do not use '${current?.representation}' at col ${current?.pos} as a number`,
+					],
+				},
 			};
 		}
-		this.consume();
 
-		current = this.current();
-		switch (current?.kind) {
-			// e.g -> "Genesis <num>:"
-			case 'chapter-verse-seperator':
-				break;
-			case 'range-char':
-				break;
-			// e.g -> "Genesis <num>;" | "Genesis <num>"
-			case 'EOL':
-			case 'book-delimiter':
-				break;
-			default:
-				return {
-					heading: 'Invalid Token for chapter-numbers',
-					possible_fixes: [
-						`It is not possible to use '${current?.representation}' as a chapter numbers`,
-						'Use something different, e.g ";" or ":"',
-					],
-				};
+		const num_value = parseInt(current.representation);
+		if (isNaN(num_value)) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		} else if (num_value <= 0) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		} else if (!isCorrectChapterOfBook(what_book, num_value)) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
 		}
 
-		return null;
+		const next = this.peek();
+		if (next === undefined || next.kind !== 'range-char') {
+			return { t: { lower_end: num_value, higher_end: num_value }, e: null };
+		}
+
+		this.consume();
+		const next_next = this.peek();
+		if (next_next === undefined || next_next.kind === 'num') {
+			// Invalid chapter-range declaration
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		}
+
+		const next_num_value = parseInt(next_next.representation);
+		if (isNaN(next_num_value)) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		} else if (next_num_value <= 0) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		} else if (next_num_value < num_value) {
+			// For example: Luke 12-2  -> it is in an invalid order
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		} else if (!isCorrectChapterOfBook(what_book, next_num_value)) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		}
+
+		this.consume();
+		return { t: { lower_end: num_value, higher_end: next_num_value }, e: null };
 	}
 
 	private parse_ordinal_number(): Success<number | null> {

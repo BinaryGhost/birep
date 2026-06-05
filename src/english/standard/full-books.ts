@@ -1,4 +1,4 @@
-import type { bookset, ordinal_bookset } from '../../internal/book-type';
+import type { bookset, ordinal_bookset } from '../../internal/books/book-type';
 
 //
 // Old Testament

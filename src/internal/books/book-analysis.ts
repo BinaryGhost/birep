@@ -1,118 +1,230 @@
-export type index_bookset = Set<string>;
+import {
+	type t_book,
+	type t_ordinal_book,
+	possible_ordinal_books,
+	possible_books,
+} from './book-type';
 
-export type index_ordinal_bookset = Set<string>;
-
-export type ordinal_bookset = string[]; // In order to differentate it better
-export type bookset = string[];
-
-/**
- * Single word synonyms are stored as keys of "synonym/synonym2/synonym3"
- *
- * "_else" can be used as default-value, if all the other
- * conditions failed.
- */
-export type WordedBookNode = {
-	[word: string | '_else']: WordedBookNode | t_ordinal_book | t_book;
-};
-
-export enum possible_ordinal_books {
-	Kings,
-	Samuel,
-	Chronicles,
-	Moses,
-	Corinthians,
-	Thessalonians,
-	Timothy,
-	Peter,
-	John,
-	Maccabees,
-	Esdras,
-	Baruch,
-	Meqabyan,
+export function isValidOrdinalBook(ord_book: t_ordinal_book): boolean {
+	switch (ord_book.book) {
+		case possible_ordinal_books.Baruch:
+			return ord_book.ordinal === 2 || ord_book.ordinal === 4;
+		case possible_ordinal_books.Esdras:
+		case possible_ordinal_books.Chronicles:
+		case possible_ordinal_books.Corinthians:
+		case possible_ordinal_books.Kings:
+		case possible_ordinal_books.Samuel:
+		case possible_ordinal_books.Peter:
+		case possible_ordinal_books.Thessalonians:
+		case possible_ordinal_books.Timothy:
+			return ord_book.ordinal === 1 || ord_book.ordinal === 2;
+		case possible_ordinal_books.John:
+			return ord_book.ordinal >= 1 && ord_book.ordinal <= 3;
+		case possible_ordinal_books.Maccabees:
+		case possible_ordinal_books.Meqabyan:
+		case possible_ordinal_books.Moses:
+			return ord_book.ordinal >= 1 && ord_book.ordinal <= 5;
+		default:
+			return false;
+	}
 }
 
-export enum possible_books {
-	Genesis,
-	Exodus,
-	Leviticus,
-	Numbers,
-	Deuteronomy,
-	Josua,
-	Judges,
-	Ruth,
-	Ezra,
-	Nehemia,
-	Esther,
-	Job,
-	Psalms,
-	Proverbs,
-	Ecclesiastes,
-	Songs_of_Solomon,
-	Isaiah,
-	Jeremiah,
-	Lamentations,
-	Ezekiel,
-	Daniel,
-	Hosea,
-	Joel,
-	Amos,
-	Obadiah,
-	Jonah,
-	Micah,
-	Nahum,
-	Habakkuk,
-	Zephaniah,
-	Haggai,
-	Zechariah,
-	Malachi,
-	Matthew,
-	Mark,
-	Luke,
-	John,
-	Acts,
-	Romans,
-	Galatians,
-	Ephesians,
-	Philippians,
-	Colossians,
-	Titus,
-	Philemon,
-	Hebrews,
-	James,
-	Jude,
-	Revelation,
-	Tobit,
-	Judith,
-	Esther_Greek,
-	Wisdom_Of_Solomon,
-	Sirach,
-	Baruch,
-	Letter_Of_Jeremiah,
-	Song_Of_The_Three_Young_Men,
-	Susanna,
-	Bel_And_The_Dragon,
-	Prayer_Of_Manasseh,
-	Psalm_151,
-	Psalms_152_To_155,
-	Odes,
-	Psalms_Of_Solomon,
-	Letter_Of_Baruch,
-	Jubilees,
-	Enoch,
-	Reproof, // Proverbs part 2: Used in the Ethiopian Bible
-	Letter_To_The_Laodiceans,
+export function isCorrectChapterOfBook(
+	book: t_ordinal_book | t_book,
+	chapter_integer: number,
+): boolean {
+	// TODO: Apocrypha currently not handled
+
+	if ('ordinal' in book) {
+		switch (book.book) {
+			case possible_ordinal_books.Chronicles:
+				if (book.ordinal === 1) {
+					return chapter_integer >= 1 && chapter_integer <= 29;
+				} else if (book.ordinal === 2) {
+					return chapter_integer >= 1 && chapter_integer <= 36;
+				} else {
+					return false;
+				}
+			case possible_ordinal_books.Corinthians:
+				if (book.ordinal === 1) {
+					return chapter_integer >= 1 && chapter_integer <= 16;
+				} else if (book.ordinal === 2) {
+					return chapter_integer >= 1 && chapter_integer <= 13;
+				} else {
+					return false;
+				}
+			case possible_ordinal_books.John:
+				if (book.ordinal === 1) {
+					return chapter_integer >= 1 && chapter_integer <= 5;
+				} else if (book.ordinal === 2) {
+					return chapter_integer === 1;
+				} else if (book.ordinal === 3) {
+					return chapter_integer === 1;
+				} else {
+					return false;
+				}
+			case possible_ordinal_books.Kings:
+				if (book.ordinal === 1) {
+					return chapter_integer >= 1 && chapter_integer <= 22;
+				} else if (book.ordinal === 2) {
+					return chapter_integer >= 1 && chapter_integer <= 25;
+				} else {
+					return false;
+				}
+			case possible_ordinal_books.Moses:
+				if (book.ordinal === 1) {
+					return chapter_integer >= 1 && chapter_integer <= 50;
+				} else if (book.ordinal === 2) {
+					return chapter_integer >= 1 && chapter_integer <= 40;
+				} else if (book.ordinal === 3) {
+					return chapter_integer >= 1 && chapter_integer <= 27;
+				} else if (book.ordinal === 4) {
+					return chapter_integer >= 1 && chapter_integer <= 36;
+				} else if (book.ordinal === 5) {
+					return chapter_integer >= 1 && chapter_integer <= 34;
+				} else {
+					return false;
+				}
+			case possible_ordinal_books.Peter:
+				if (book.ordinal === 1) {
+					return chapter_integer >= 1 && chapter_integer <= 5;
+				} else if (book.ordinal === 2) {
+					return chapter_integer >= 1 && chapter_integer <= 3;
+				} else {
+					return false;
+				}
+			case possible_ordinal_books.Samuel:
+				if (book.ordinal === 1) {
+					return chapter_integer >= 1 && chapter_integer <= 31;
+				} else if (book.ordinal === 2) {
+					return chapter_integer >= 1 && chapter_integer <= 24;
+				} else {
+					return false;
+				}
+			case possible_ordinal_books.Thessalonians:
+				if (book.ordinal === 1) {
+					return chapter_integer >= 1 && chapter_integer <= 5;
+				} else if (book.ordinal === 2) {
+					return chapter_integer >= 1 && chapter_integer <= 3;
+				} else {
+					return false;
+				}
+			case possible_ordinal_books.Timothy:
+				if (book.ordinal === 1) {
+					return chapter_integer >= 1 && chapter_integer <= 6;
+				} else if (book.ordinal === 2) {
+					return chapter_integer >= 1 && chapter_integer <= 4;
+				} else {
+					return false;
+				}
+			default:
+				return false;
+		}
+	} else {
+		switch (book.book) {
+			case possible_books.Acts:
+				return chapter_integer >= 1 && chapter_integer <= 28;
+			case possible_books.Amos:
+				return chapter_integer >= 1 && chapter_integer <= 9;
+			case possible_books.Colossians:
+				return chapter_integer >= 1 && chapter_integer <= 4;
+			case possible_books.Daniel:
+				return chapter_integer >= 1 && chapter_integer <= 12;
+			case possible_books.Deuteronomy:
+				return chapter_integer >= 1 && chapter_integer <= 34;
+			case possible_books.Ecclesiastes:
+				return chapter_integer >= 1 && chapter_integer <= 12;
+			case possible_books.Ephesians:
+				return chapter_integer >= 1 && chapter_integer <= 6;
+			case possible_books.Esther:
+				return chapter_integer >= 1 && chapter_integer <= 10;
+			case possible_books.Exodus:
+				return chapter_integer >= 1 && chapter_integer <= 40;
+			case possible_books.Ezekiel:
+				return chapter_integer >= 1 && chapter_integer <= 48;
+			case possible_books.Ezra:
+				return chapter_integer >= 1 && chapter_integer <= 10;
+			case possible_books.Galatians:
+				return chapter_integer >= 1 && chapter_integer <= 6;
+			case possible_books.Genesis:
+				return chapter_integer >= 1 && chapter_integer <= 50;
+			case possible_books.Habakkuk:
+				return chapter_integer >= 1 && chapter_integer <= 3;
+			case possible_books.Haggai:
+				return chapter_integer >= 1 && chapter_integer <= 2;
+			case possible_books.Hebrews:
+				return chapter_integer >= 1 && chapter_integer <= 13;
+			case possible_books.Hosea:
+				return chapter_integer >= 1 && chapter_integer <= 14;
+			case possible_books.Isaiah:
+				return chapter_integer >= 1 && chapter_integer <= 66;
+			case possible_books.James:
+				return chapter_integer >= 1 && chapter_integer <= 5;
+			case possible_books.Job:
+				return chapter_integer >= 1 && chapter_integer <= 42;
+			case possible_books.Joel:
+				return chapter_integer >= 1 && chapter_integer <= 3;
+			case possible_books.John:
+				return chapter_integer >= 1 && chapter_integer <= 21;
+			case possible_books.Jeremiah:
+				return chapter_integer >= 1 && chapter_integer <= 52;
+			case possible_books.Jonah:
+				return chapter_integer >= 1 && chapter_integer <= 4;
+			case possible_books.Josua:
+				return chapter_integer >= 1 && chapter_integer <= 24;
+			case possible_books.Jude:
+				return chapter_integer === 1;
+			case possible_books.Judges:
+				return chapter_integer >= 1 && chapter_integer <= 21;
+			case possible_books.Lamentations:
+				return chapter_integer >= 1 && chapter_integer <= 5;
+			case possible_books.Leviticus:
+				return chapter_integer >= 1 && chapter_integer <= 27;
+			case possible_books.Luke:
+				return chapter_integer >= 1 && chapter_integer <= 24;
+			case possible_books.Malachi:
+				return chapter_integer >= 1 && chapter_integer <= 4;
+			case possible_books.Mark:
+				return chapter_integer >= 1 && chapter_integer <= 16;
+			case possible_books.Matthew:
+				return chapter_integer >= 1 && chapter_integer <= 28;
+			case possible_books.Micah:
+				return chapter_integer >= 1 && chapter_integer <= 7;
+			case possible_books.Nahum:
+				return chapter_integer >= 1 && chapter_integer <= 3;
+			case possible_books.Nehemia:
+				return chapter_integer >= 1 && chapter_integer <= 13;
+			case possible_books.Numbers:
+				return chapter_integer >= 1 && chapter_integer <= 36;
+			case possible_books.Obadiah:
+				return chapter_integer === 1;
+			case possible_books.Philemon:
+				return chapter_integer === 1;
+			case possible_books.Philippians:
+				return chapter_integer >= 1 && chapter_integer <= 4;
+			case possible_books.Proverbs:
+				return chapter_integer >= 1 && chapter_integer <= 31;
+			case possible_books.Psalms:
+				return chapter_integer >= 1 && chapter_integer <= 150;
+			case possible_books.Revelation:
+				return chapter_integer >= 1 && chapter_integer <= 22;
+			case possible_books.Romans:
+				return chapter_integer >= 1 && chapter_integer <= 16;
+			case possible_books.Ruth:
+				return chapter_integer >= 1 && chapter_integer <= 4;
+			case possible_books.Songs_of_Solomon:
+				return chapter_integer >= 1 && chapter_integer <= 8;
+			case possible_books.Titus:
+				return chapter_integer >= 1 && chapter_integer <= 3;
+			case possible_books.Zechariah:
+				return chapter_integer >= 1 && chapter_integer <= 14;
+			case possible_books.Zephaniah:
+				return chapter_integer >= 1 && chapter_integer <= 3;
+			default:
+				return false;
+		}
+	}
 }
-
-export type t_ordinal_book = {
-	book: possible_ordinal_books;
-	is_apocryphal: boolean;
-	ordinal: number;
-};
-
-export type t_book = {
-	book: possible_books;
-	is_apocryphal: boolean;
-};
 
 export class ToOrdinalRepresentation {
 	english(ord_book: t_ordinal_book): string | undefined {
@@ -311,30 +423,6 @@ export class ToOrdinalRepresentation {
 
 	_native_(ord_book: t_ordinal_book): string | undefined {
 		return undefined;
-	}
-}
-
-export function isValidOrdinalBook(ord_book: t_ordinal_book): boolean {
-	switch (ord_book.book) {
-		case possible_ordinal_books.Baruch:
-			return ord_book.ordinal === 2 || ord_book.ordinal === 4;
-		case possible_ordinal_books.Esdras:
-		case possible_ordinal_books.Chronicles:
-		case possible_ordinal_books.Corinthians:
-		case possible_ordinal_books.Kings:
-		case possible_ordinal_books.Samuel:
-		case possible_ordinal_books.Peter:
-		case possible_ordinal_books.Thessalonians:
-		case possible_ordinal_books.Timothy:
-			return ord_book.ordinal === 1 || ord_book.ordinal === 2;
-		case possible_ordinal_books.John:
-			return ord_book.ordinal >= 1 && ord_book.ordinal <= 3;
-		case possible_ordinal_books.Maccabees:
-		case possible_ordinal_books.Meqabyan:
-		case possible_ordinal_books.Moses:
-			return ord_book.ordinal >= 1 && ord_book.ordinal <= 5;
-		default:
-			return false;
 	}
 }
 

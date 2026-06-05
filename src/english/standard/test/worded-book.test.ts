@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { StandardEnglishParser } from '../parser';
 import { StandardEnglishLexer } from '../lexer';
 import { Standard_WordedBookTrie } from '../books-worded';
-import { possible_books } from '../../../internal/book-type';
+import { possible_books } from '../../../internal/books/book-type';
 
 describe('Test the trie', () => {
 	test('Recognise book by fullname', () => {

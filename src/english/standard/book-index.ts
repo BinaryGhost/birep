@@ -1,4 +1,4 @@
-import type { index_bookset, index_ordinal_bookset } from '../../internal/book-type';
+import type { index_bookset, index_ordinal_bookset } from '../../internal/books/book-type';
 import * as full from './full-books';
 
 //
