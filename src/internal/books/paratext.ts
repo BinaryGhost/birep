@@ -103,13 +103,14 @@ export const susanna: bookset = ['SUS'];
  * Sometimes included in Greek Daniel; called "Rest of
 Daniel" in Ethiopia 
  */
-export const bel_and_the_dragon: bookset = ['BEL']; // TODO: Handle this exceptional case
+export const bel_and_the_dragon: bookset = ['BEL'];
 
 /**
  * For orthodox and catholic bibles
  */
 export const maccabees: ordinal_bookset = ['MA'];
 
+// TODO: Handle the distinction between 1 | 2 Esdras and 3 | 4 Esdras
 /**
  * 1 esdras (greek -> The 9 chapter book of Greek Ezra in the LXX, called 2
 Esdras in Russian Bibles, and called 3 Esdras in the
@@ -130,13 +131,13 @@ export const prayer_of_manasseh: bookset = ['MAN'];
  * An additional Psalm in the Septuagint, appended to
 Psalms in Orthodox Bibles 
  */
-export const psalm_151: bookset = ['PS2']; // TODO: Handle this exceptional case
+export const psalm_151: bookset = ['PS2'];
 
 /**
  * Additional Psalms 152-155 found in West Syriac
 manuscripts 
  */
-export const psalms_152_to_155: bookset = ['PS3']; // TODO: Handle this exceptional case
+export const psalms_152_to_155: bookset = ['PS3'];
 
 /**
  * A book in some editions of the Septuagint; Odes has
@@ -151,13 +152,14 @@ printed in modern Bibles
  */
 export const psalms_of_solomon: bookset = ['PSS'];
 
+// TODO: Handle 2 Baruch and 4 Baruch
 /**
  * 2 Baruch -> The Apocalypse of Baruch in Syriac Bibles
  * 4 Baruch -> Paralipomenon of Jeremiah, called Rest of the Words of
 Baruch in Ethiopia; may include or exclude the Letter
 of Jeremiah as chapter 1, used in the Ethiopian Bible 
  */
-export const baruch_epistles: ordinal_bookset = ['BA']; // TODO: Handle 2 Baruch and 4 Baruch
+export const baruch_epistles: ordinal_bookset = ['BA'];
 
 /**
  * Sometimes appended to 2 Baruch; sometimes separate

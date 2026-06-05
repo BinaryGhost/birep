@@ -97,8 +97,8 @@ export enum possible_books {
 	Susanna,
 	Bel_And_The_Dragon,
 	Prayer_Of_Manasseh,
-	Psalm_151,
-	Psalms_152_To_155,
+	Psalm_151, // TODO: You need to handle them some day
+	Psalms_152_To_155, // TODO: You need to handle them some day
 	Odes,
 	Psalms_Of_Solomon,
 	Letter_Of_Baruch,
@@ -110,11 +110,9 @@ export enum possible_books {
 
 export type t_ordinal_book = {
 	book: possible_ordinal_books;
-	is_apocryphal: boolean;
 	ordinal: number;
 };
 
 export type t_book = {
 	book: possible_books;
-	is_apocryphal: boolean;
 };

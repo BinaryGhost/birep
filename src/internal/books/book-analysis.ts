@@ -4,6 +4,7 @@ import {
 	possible_ordinal_books,
 	possible_books,
 } from './book-type';
+import { protestant } from './canon';
 
 export function isValidOrdinalBook(ord_book: t_ordinal_book): boolean {
 	switch (ord_book.book) {
@@ -26,6 +27,27 @@ export function isValidOrdinalBook(ord_book: t_ordinal_book): boolean {
 			return ord_book.ordinal >= 1 && ord_book.ordinal <= 5;
 		default:
 			return false;
+	}
+}
+
+export function isApocryphal(book: t_book | t_ordinal_book): boolean {
+	if ('ordinal' in book) {
+		for (let i = 0; i < protestant.ordinal.length; i++) {
+			if (
+				protestant.ordinal[i]?.book === book.book &&
+				protestant.ordinal[i]?.ordinal === book?.ordinal
+			) {
+				return true;
+			}
+		}
+		return false;
+	} else {
+		for (let i = 0; i < protestant.ordinal.length; i++) {
+			if (protestant.not_ordinal[i]?.book === book.book) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
 
@@ -240,7 +262,7 @@ export class ToOrdinalRepresentation {
 
 				return `${ord_book.ordinal} Baruch`;
 			case possible_ordinal_books.Esdras:
-				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
+				if (ord_book.ordinal <= 1 && ord_book.ordinal >= 4) {
 					return undefined;
 				}
 
@@ -337,7 +359,7 @@ export class ToOrdinalRepresentation {
 
 				return `${ord_book.ordinal}BA`;
 			case possible_ordinal_books.Esdras:
-				if (ord_book.ordinal !== 1 && ord_book.ordinal !== 2) {
+				if (ord_book.ordinal <= 1 && ord_book.ordinal >= 4) {
 					return undefined;
 				}
 

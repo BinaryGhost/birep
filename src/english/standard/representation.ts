@@ -1,4 +1,4 @@
-import { ToOrdinalRepresentation, ToRepresentation } from '../../internal/books/book-type';
+import { ToOrdinalRepresentation, ToRepresentation } from '../../internal/books/book-analysis';
 import type { t_book, t_ordinal_book } from '../../internal/books/book-type';
 
 export class EnglishStandardOrdinalRepresentation extends ToOrdinalRepresentation {

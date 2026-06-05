@@ -49,7 +49,7 @@ export class Parser implements parser_essentials {
 		ref_trie: WordedBookNode | undefined,
 	): Success<t_book | t_ordinal_book | null> {
 		return {
-			t: { book: 0, is_apocryphal: false },
+			t: { book: 0 },
 			e: null,
 		};
 	}

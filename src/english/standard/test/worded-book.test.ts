@@ -11,7 +11,7 @@ describe('Test the trie', () => {
 		const result = parser.parseWordedBookname(Standard_WordedBookTrie);
 
 		expect(result.e).toBeNull();
-		expect(result.t).toEqual({ book: possible_books.Songs_of_Solomon, is_apocryphal: false });
+		expect(result.t).toEqual({ book: possible_books.Songs_of_Solomon });
 	});
 	test('Take "_else" key', () => {
 		const lexer = new StandardEnglishLexer('Wisdom');
@@ -20,7 +20,7 @@ describe('Test the trie', () => {
 		const result = parser.parseWordedBookname(Standard_WordedBookTrie);
 
 		expect(result.e).toBeNull();
-		expect(result.t).toEqual({ book: possible_books.Wisdom_Of_Solomon, is_apocryphal: true });
+		expect(result.t).toEqual({ book: possible_books.Wisdom_Of_Solomon });
 	});
 	test('Access one-word synonyms', () => {
 		const lexer = new StandardEnglishLexer('gospel of mark');
@@ -29,6 +29,6 @@ describe('Test the trie', () => {
 		const result = parser.parseWordedBookname(Standard_WordedBookTrie);
 
 		expect(result.e).toBeNull();
-		expect(result.t).toEqual({ book: possible_books.Mark, is_apocryphal: false });
+		expect(result.t).toEqual({ book: possible_books.Mark });
 	});
 });

@@ -3,6 +3,7 @@ import * as full from './full-books';
 
 //
 // Old Testament
+export const moses_ord: index_ordinal_bookset = new Set(full.moses_ord);
 export const genesis: index_bookset = new Set(full.genesis);
 export const exodus: index_bookset = new Set(full.exodus);
 export const leviticus: index_bookset = new Set(full.levitcius);

@@ -23,7 +23,6 @@ describe('Recognise Ordinal Books', () => {
 		expect(result.t).toEqual({
 			book: possible_ordinal_books.John,
 			ordinal: 1,
-			is_apocryphal: false,
 		});
 	});
 	test('First st John', () => {
@@ -41,7 +40,6 @@ describe('Recognise Ordinal Books', () => {
 		expect(result.t).toEqual({
 			book: possible_ordinal_books.Samuel,
 			ordinal: 1,
-			is_apocryphal: false,
 		});
 	});
 	test('3. Corinthians', () => {
@@ -59,7 +57,6 @@ describe('Recognise Ordinal Books', () => {
 		expect(result.t).toEqual({
 			book: possible_ordinal_books.Peter,
 			ordinal: 2,
-			is_apocryphal: false,
 		});
 	});
 });

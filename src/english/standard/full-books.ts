@@ -2,6 +2,7 @@ import type { bookset, ordinal_bookset } from '../../internal/books/book-type';
 
 //
 // Old Testament
+export const moses_ord: ordinal_bookset = ['Moses'];
 export const genesis: bookset = ['Genesis'];
 export const exodus: bookset = ['Exodus'];
 export const levitcius: bookset = ['Leviticus'];
