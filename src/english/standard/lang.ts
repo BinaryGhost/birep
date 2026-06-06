@@ -15,7 +15,7 @@ export const standard_style: LanguageOptions = {
 		fourth: ['th', '.'],
 		fifth: ['th', '.'],
 	},
-	allowed_book_delimiters: [';'],
+	allowed_book_delimiters: [],
 	allowed_chapter_delimiters: [';'],
 	allowed_verse_seperators: [','],
 	allowed_chapter_verse_seperators: [':'],

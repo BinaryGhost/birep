@@ -262,7 +262,7 @@ export class ToOrdinalRepresentation {
 
 				return `${ord_book.ordinal} Baruch`;
 			case possible_ordinal_books.Esdras:
-				if (ord_book.ordinal <= 1 && ord_book.ordinal >= 4) {
+				if (ord_book.ordinal >= 1 && ord_book.ordinal <= 4) {
 					return undefined;
 				}
 
@@ -359,7 +359,7 @@ export class ToOrdinalRepresentation {
 
 				return `${ord_book.ordinal}BA`;
 			case possible_ordinal_books.Esdras:
-				if (ord_book.ordinal <= 1 && ord_book.ordinal >= 4) {
+				if (ord_book.ordinal >= 1 && ord_book.ordinal <= 4) {
 					return undefined;
 				}
 

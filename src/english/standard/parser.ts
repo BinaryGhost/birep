@@ -8,6 +8,7 @@ import {
 	type t_book,
 	type t_chapter,
 	type t_ordinal_book,
+	type t_verse,
 	type WordedBookNode,
 } from '../../internal/books/book-type';
 import { isCorrectChapterOfBook, isValidOrdinalBook } from '../../internal/books/book-analysis';
@@ -537,5 +538,89 @@ export class StandardEnglishParser extends Parser {
 		} else {
 			return { t: null, e: { heading: '', possible_fixes: [] } };
 		}
+	}
+
+	// TODO: Do your features here in the future
+	parseVerses(): Success<t_verse[] | null> {
+		let verses_acc: t_verse[] = [];
+
+		while (this.index < this.source_tokens.length) {
+			const current = this.current();
+			if (!current || current.kind === 'EOL' || current.kind === 'chapter-delimiter') break;
+
+			const current_num = parseInt(current.representation);
+			if (isNaN(current_num)) {
+				return { t: null, e: { heading: '', possible_fixes: [] } };
+			}
+
+			let lower_notation = '';
+			const next_token = this.peek();
+			if (next_token && next_token.kind === 'ident' && next_token.representation.length === 1) {
+				lower_notation = next_token.representation;
+				this.consume();
+			}
+
+			const next_next_token = this.peek();
+			if (next_next_token && next_next_token.kind === 'range-char') {
+				this.consume();
+
+				this.consume();
+				const range_end = this.current();
+				if (!range_end || range_end.kind !== 'num') {
+					// invalid range
+					return { t: null, e: { heading: '', possible_fixes: [] } };
+				}
+
+				const range_end_num = parseInt(range_end.representation);
+				if (isNaN(range_end_num)) {
+					// invalid range
+					return { t: null, e: { heading: '', possible_fixes: [] } };
+				} else if (current_num > range_end_num) {
+					// invalid range from highest to lowest
+					return { t: null, e: { heading: '', possible_fixes: [] } };
+				}
+				// this.consume();
+
+				let higher_notation = '';
+				const range_end_notation = this.peek();
+				if (
+					range_end_notation &&
+					range_end_notation.kind === 'ident' &&
+					range_end_notation.representation.length === 1
+				) {
+					higher_notation = range_end_notation.representation;
+					this.consume();
+				}
+
+				verses_acc.push({
+					lower_verse: current_num,
+					lower_verse_notation: lower_notation,
+					higher_verse: range_end_num,
+					higher_verse_notation: higher_notation,
+				});
+			} else {
+				verses_acc.push({
+					lower_verse: current_num,
+					lower_verse_notation: lower_notation,
+					higher_verse: current_num,
+					higher_verse_notation: lower_notation,
+				});
+			}
+
+			this.consume();
+
+			const separator = this.current();
+			if (!separator || separator?.kind === 'EOL' || separator?.kind === 'chapter-delimiter') break;
+
+			if (separator?.kind !== 'verse-seperator') {
+				// Either verses or verse-ranges have to end with a verse-seperator!
+				return { t: null, e: { heading: '', possible_fixes: [] } };
+			}
+			this.consume();
+		}
+
+		return verses_acc.length === 0
+			? { t: null, e: { heading: '', possible_fixes: [] } }
+			: { t: verses_acc, e: null };
 	}
 }

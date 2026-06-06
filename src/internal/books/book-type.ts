@@ -10,6 +10,13 @@ export type t_chapter = {
 	higher_end: number;
 };
 
+export type t_verse = {
+	lower_verse: number;
+	lower_verse_notation: string;
+	higher_verse: number;
+	higher_verse_notation: string;
+};
+
 /**
  * Single word synonyms are stored as keys of "synonym/synonym2/synonym3"
  *

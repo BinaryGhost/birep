@@ -16,7 +16,6 @@ export interface ParserConfig {
 	ignore_books: string[]; // Full english names
 	ignore_apocryphal_books: boolean;
 	allow_keyword_idents: boolean; // -> 1. Cortnth. chapter 1 verse 1
-	allow_f_ff: boolean; // -> 1st Cor. 1:1f
 	allow_leading_zeros: boolean; // -> 1 Cor. 01:01 -> 1 Cor. 1:1
 	/**
 	 * -> Only allow [1., 2., 3., ...] as ordinals, not [1st, 2nd, 3rd, ...]
@@ -24,6 +23,10 @@ export interface ParserConfig {
 	 * NOTE: Other languages have a different way of writing ordinals
 	 */
 	strict_ordinals: boolean;
+	/**
+	 * Should something like "Gen 1:3-4,1,2" be allowed?
+	 */
+	strict_ascending_for_verses: boolean;
 	allow_translation_mentions: boolean; // -> 1 Cor. 1:1 (NIV, ESV, KJV)
 	/**
 	 * Allow_seperate_translation_mentions and allow_translation_mentions
