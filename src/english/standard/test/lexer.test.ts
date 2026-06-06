@@ -1,24 +1,27 @@
 import { describe, expect, test } from 'bun:test';
 import { StandardEnglishLexer } from '../lexer';
+import { standard_style } from '../lang';
 
 describe('Testing a bunch of things', () => {
+	const lexer = new StandardEnglishLexer(standard_style);
+
 	test('Basic token recognition', () => {
-		const lexer = new StandardEnglishLexer('John 12');
+		const lexed = lexer.lex('John 12');
 		// console.log(lexer.token_list);
 
-		expect(lexer.token_list.length).toBe(3);
-		expect(lexer.token_list[0]).toEqual({ kind: 'ident', representation: 'John', pos: 0 });
-		expect(lexer.token_list[1]).toEqual({ kind: 'num', representation: '12', pos: 5 });
+		expect(lexed.length).toBe(3);
+		expect(lexed[0]).toEqual({ kind: 'ident', representation: 'John', pos: 0 });
+		expect(lexed[1]).toEqual({ kind: 'num', representation: '12', pos: 5 });
 	});
 	test('Point inside ident is included', () => {
-		const lexer = new StandardEnglishLexer('John.');
+		const lexed = lexer.lex('John.');
 
-		expect(lexer.token_list[0]).toEqual({ kind: 'ident', representation: 'John.', pos: 0 });
+		expect(lexed[0]).toEqual({ kind: 'ident', representation: 'John.', pos: 0 });
 	});
 	test('Other character recognition', () => {
-		const lexer = new StandardEnglishLexer('John -;');
+		const lexed = lexer.lex('John -;');
 
-		expect(lexer.token_list[1]!.kind).toBe('range-char');
-		expect(lexer.token_list[2]!.kind).toBe('chapter-delimiter');
+		expect(lexed[1]!.kind).toBe('range-char');
+		expect(lexed[2]!.kind).toBe('chapter-delimiter');
 	});
 });

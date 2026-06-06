@@ -7,14 +7,15 @@ import {
 	possible_ordinal_books,
 	type t_book,
 	type t_chapter,
+	type t_chapter_verse,
 	type t_ordinal_book,
+	type t_reference,
 	type t_verse,
 	type WordedBookNode,
 } from '../../internal/books/book-type';
 import { isCorrectChapterOfBook, isValidOrdinalBook } from '../../internal/books/book-analysis';
-
-// function parseReference() {}
-// function parseBook() {}
+import { Standard_WordedBookTrie } from './books-worded';
+import type { StandardForm } from '../../internal/output-interfaces';
 
 export class StandardEnglishParser extends Parser {
 	override gathered_ordinal_words: Set<string> = new Set<string>(
@@ -33,35 +34,116 @@ export class StandardEnglishParser extends Parser {
 		...standard_style.allowed_ordinal_abbrs.fifth,
 	);
 
-	parse(): Error {
-		// let current = this.current();
-		// if (current === undefined) {
-		// 	return { heading: '', possible_fixes: [] };
-		// }
+	override parse(): Success<t_reference[] | null> {
+		let references: t_reference[] = [];
 
-		// let next = this.peek();
-		// if (next === undefined) {
-		// 	return { heading: '', possible_fixes: [] };
-		// }
+		while (this.index < this.source_tokens.length) {
+			const current = this.current();
+			if (!current || current.kind === 'EOL') break;
 
-		// if (
-		// 	(current.kind === 'num' || this.gathered_ordinal_words.has(current.representation)) &&
-		// 	next.kind === 'ident'
-		// ) {
-		// 	this.parseOrdinalBook();
-		// } else if (current.kind === 'num' && next.kind !== 'num') {
-		// } else if (current.kind === 'ident') {
-		// } else {
-		// 	return { heading: '', possible_fixes: [] };
-		// }
+			const reference = this.parseReference();
+			if (reference.t === null) {
+				return { t: null, e: reference.e };
+			}
 
-		// TODO: Handle all cases:
-		// ORDINALS => <num> + <identifier>
-		// REFERENCE => <num> + <range> | <delimiters> | <eol>
-		// BOOK => <identifier>
-		// ELSE => error
+			references.push(reference.t);
 
-		return null;
+			this.consume();
+			const next = this.current();
+			if (next === undefined || next.kind === 'EOL') break;
+
+			if (next.kind === 'chapter-delimiter') {
+				this.consume();
+			}
+		}
+
+		return { t: references, e: null };
+	}
+
+	parseReference(): Success<t_reference | null> {
+		const current = this.current();
+		if (current === undefined) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		} else if (current.kind !== 'num' && current.kind !== 'ident') {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		}
+
+		const next = this.peek();
+		if (next === undefined) {
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		}
+
+		//
+		//
+		// Ordinal Book
+		//	-> <num> <ident>
+		//	-> First | Second ... <ident>
+		//
+		// 	=> <Reference>
+		if (
+			(current.kind === 'num' || this.gathered_ordinal_words.has(current.representation)) &&
+			next.kind === 'ident'
+		) {
+			let book = this.parseOrdinalBook() as any;
+			if (book.t === null) {
+				book = this.parseWordedBookname(Standard_WordedBookTrie);
+				if (book.t === null) {
+					return { t: null, e: book.e };
+				}
+			}
+
+			this.consume();
+			const chap_verse = this.parseChapterVerse();
+			if (chap_verse.t === null) {
+				return { t: null, e: chap_verse.e };
+			}
+
+			return { t: { book: book.t, reference: chap_verse.t }, e: null };
+		}
+
+		//
+		//
+		// Book
+		//	-> <ident1> <ident> (ident1 not First | Second ...)
+		//	-> <ident>
+		//
+		// 	=> <Reference>
+		if (current.kind === 'ident') {
+			let book = this.parseBook() as any;
+			if (book.t === null) {
+				book = this.parseWordedBookname(Standard_WordedBookTrie);
+				if (book.t === null) {
+					return { t: null, e: book.e };
+				}
+			}
+
+			this.consume();
+			const chap_verse = this.parseChapterVerse();
+			if (chap_verse.t === null) {
+				return { t: null, e: chap_verse.e };
+			}
+
+			return { t: { book: book.t, reference: chap_verse.t }, e: null };
+		}
+
+		//
+		//
+		// Chapter or Verse
+		if (current.kind === 'num') {
+			const chap_verse = this.parseChapterVerse();
+			if (chap_verse.t === null) {
+				return { t: null, e: chap_verse.e };
+			}
+
+			const cur_book = this.current_book;
+			if (cur_book === undefined) {
+				return { t: null, e: { heading: '', possible_fixes: [] } };
+			}
+
+			return { t: { book: cur_book, reference: chap_verse.t }, e: null };
+		}
+
+		return { t: null, e: { heading: '', possible_fixes: [] } };
 	}
 
 	parseChapterNumber(what_book: t_ordinal_book | t_book): Success<t_chapter | null> {
@@ -109,7 +191,7 @@ export class StandardEnglishParser extends Parser {
 
 		this.consume();
 		const next_next = this.peek();
-		if (next_next === undefined || next_next.kind === 'num') {
+		if (next_next === undefined || next_next.kind !== 'num') {
 			// Invalid chapter-range declaration
 			return { t: null, e: { heading: '', possible_fixes: [] } };
 		}
@@ -622,5 +704,36 @@ export class StandardEnglishParser extends Parser {
 		return verses_acc.length === 0
 			? { t: null, e: { heading: '', possible_fixes: [] } }
 			: { t: verses_acc, e: null };
+	}
+
+	parseChapterVerse(): Success<t_chapter_verse | null> {
+		if (this.current_book === undefined) {
+			// It can not start with a chapter... -> e.g 12-13; Luke 1:1
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		}
+
+		const chapt = this.parseChapterNumber(this.current_book);
+		if (chapt.t === null) {
+			return { t: null, e: chapt.e };
+		}
+
+		this.consume();
+		const seperator = this.current();
+		if (seperator === undefined || seperator.kind === 'chapter-delimiter') {
+			return { t: { chapter: chapt.t }, e: null };
+		}
+
+		// ---
+
+		if (seperator?.kind !== 'chapter-verse-seperator') {
+			// No ":", duuh
+			return { t: null, e: { heading: '', possible_fixes: [] } };
+		}
+
+		const verses = this.parseVerses();
+		if (verses.t === null) {
+			return { t: null, e: verses.e };
+		}
+		return { t: { chapter: chapt.t, verses: verses.t }, e: null };
 	}
 }

@@ -17,6 +17,16 @@ export type t_verse = {
 	higher_verse_notation: string;
 };
 
+export type t_chapter_verse = {
+	chapter: t_chapter;
+	verses?: t_verse[];
+};
+
+export type t_reference = {
+	book: t_book | t_ordinal_book;
+	reference: t_chapter_verse;
+};
+
 /**
  * Single word synonyms are stored as keys of "synonym/synonym2/synonym3"
  *

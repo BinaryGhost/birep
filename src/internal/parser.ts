@@ -1,7 +1,6 @@
-import { BaseLexer, type Token } from './lexing';
+import { type Token } from './lexing';
 import type { Success } from './errors';
-import type { StandardForm } from './output-interfaces';
-import type { WordedBookNode } from './books/book-type';
+import type { t_reference, WordedBookNode } from './books/book-type';
 import type { t_book, t_ordinal_book } from './books/book-type';
 
 interface parser_essentials {
@@ -13,16 +12,17 @@ interface parser_essentials {
 export class Parser implements parser_essentials {
 	protected index: number = 0;
 	protected source_tokens: Token[] = [];
+	protected current_book: t_book | t_ordinal_book | undefined;
 
 	gathered_ordinal_abbrs: Set<string> = new Set([]);
 	gathered_ordinal_words: Set<string> = new Set([]);
 
-	public standard_output: StandardForm[] = [];
+	constructor(source_tokens: Token[]) {
+		this.source_tokens = source_tokens;
+	}
 
-	constructor(lexer: BaseLexer) {
-		if (lexer instanceof BaseLexer) {
-			this.source_tokens = lexer.token_list;
-		}
+	public parse(): Success<t_reference[] | null> {
+		return { t: [], e: null };
 	}
 
 	current(): Token | undefined {
@@ -33,11 +33,11 @@ export class Parser implements parser_essentials {
 		}
 	}
 
-	peek(): Token | undefined {
-		if (this.index + 1 > this.source_tokens.length) {
+	peek(n: number = 1): Token | undefined {
+		if (this.index + n > this.source_tokens.length) {
 			return undefined;
 		} else {
-			return this.source_tokens[this.index + 1];
+			return this.source_tokens[this.index + n];
 		}
 	}
 
@@ -48,6 +48,7 @@ export class Parser implements parser_essentials {
 	parseWordedBookname(
 		ref_trie: WordedBookNode | undefined,
 	): Success<t_book | t_ordinal_book | null> {
+		const _ = ref_trie;
 		return {
 			t: { book: 0 },
 			e: null,

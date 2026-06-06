@@ -1,3 +1,5 @@
+import type { LanguageOptions } from './lang-type';
+
 export interface Token {
 	kind:
 		| 'num'
@@ -13,5 +15,14 @@ export interface Token {
 }
 
 export class BaseLexer {
-	token_list: Token[] = [];
+	lang: LanguageOptions;
+
+	constructor(lang: LanguageOptions) {
+		this.lang = lang;
+	}
+
+	lex(input: string): Token[] {
+		const _ = input;
+		return [];
+	}
 }
