@@ -1,5 +1,6 @@
 interface BirepError {
 	heading: string;
+	subheading?: string;
 	possible_fixes: string[];
 }
 

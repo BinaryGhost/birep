@@ -1,5 +1,6 @@
 import { Parser } from '../../internal/parser';
-import type { Error, Success } from '../../internal/errors';
+import type { Success } from '../../internal/errors';
+import type { Token } from '../../internal/lexing';
 import { standard_style } from './lang';
 import * as booki from './book-index';
 import {
@@ -13,9 +14,13 @@ import {
 	type t_verse,
 	type WordedBookNode,
 } from '../../internal/books/book-type';
-import { isCorrectChapterOfBook, isValidOrdinalBook } from '../../internal/books/book-analysis';
+import {
+	debugBookName,
+	isCorrectChapterOfBook,
+	isValidOrdinalBook,
+} from '../../internal/books/book-analysis';
 import { Standard_WordedBookTrie } from './books-worded';
-import type { StandardForm } from '../../internal/output-interfaces';
+import { printIt } from '../../internal/lang-type';
 
 export class StandardEnglishParser extends Parser {
 	override gathered_ordinal_words: Set<string> = new Set<string>(
@@ -42,6 +47,7 @@ export class StandardEnglishParser extends Parser {
 			if (!current || current.kind === 'EOL') break;
 
 			const reference = this.parseReference();
+			console.log('reference: ', reference);
 			if (reference.t === null) {
 				return { t: null, e: reference.e };
 			}
@@ -63,14 +69,14 @@ export class StandardEnglishParser extends Parser {
 	parseReference(): Success<t_reference | null> {
 		const current = this.current();
 		if (current === undefined) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return { t: null, e: { heading: 'akj', possible_fixes: [] } };
 		} else if (current.kind !== 'num' && current.kind !== 'ident') {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return { t: null, e: { heading: 'gg', possible_fixes: [] } };
 		}
 
 		const next = this.peek();
 		if (next === undefined) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return { t: null, e: { heading: 'dada', possible_fixes: [] } };
 		}
 
 		//
@@ -85,15 +91,18 @@ export class StandardEnglishParser extends Parser {
 			next.kind === 'ident'
 		) {
 			let book = this.parseOrdinalBook() as any;
+			// console.log('book: ', book);
 			if (book.t === null) {
 				book = this.parseWordedBookname(Standard_WordedBookTrie);
 				if (book.t === null) {
 					return { t: null, e: book.e };
 				}
 			}
+			this.current_book = book.t;
 
 			this.consume();
 			const chap_verse = this.parseChapterVerse();
+			// console.log('chap_verse: ', chap_verse);
 			if (chap_verse.t === null) {
 				return { t: null, e: chap_verse.e };
 			}
@@ -110,15 +119,18 @@ export class StandardEnglishParser extends Parser {
 		// 	=> <Reference>
 		if (current.kind === 'ident') {
 			let book = this.parseBook() as any;
+			// console.log('book: ', book);
 			if (book.t === null) {
 				book = this.parseWordedBookname(Standard_WordedBookTrie);
 				if (book.t === null) {
 					return { t: null, e: book.e };
 				}
 			}
+			this.current_book = book.t;
 
 			this.consume();
 			const chap_verse = this.parseChapterVerse();
+			// console.log('chap_verse: ', chap_verse);
 			if (chap_verse.t === null) {
 				return { t: null, e: chap_verse.e };
 			}
@@ -137,16 +149,16 @@ export class StandardEnglishParser extends Parser {
 
 			const cur_book = this.current_book;
 			if (cur_book === undefined) {
-				return { t: null, e: { heading: '', possible_fixes: [] } };
+				return { t: null, e: { heading: 'bauk', possible_fixes: [] } };
 			}
 
 			return { t: { book: cur_book, reference: chap_verse.t }, e: null };
 		}
 
-		return { t: null, e: { heading: '', possible_fixes: [] } };
+		return { t: null, e: { heading: 'nest', possible_fixes: [] } };
 	}
 
-	parseChapterNumber(what_book: t_ordinal_book | t_book): Success<t_chapter | null> {
+	parseChapterNumber(): Success<t_chapter | null> {
 		let current = this.current();
 
 		// if (current?.kind === 'EOL') {
@@ -176,12 +188,33 @@ export class StandardEnglishParser extends Parser {
 		}
 
 		const num_value = parseInt(current.representation);
+
 		if (isNaN(num_value)) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Chapter-Number',
+					possible_fixes: [`"${current.representation}" could not be turned into a number`],
+				},
+			};
 		} else if (num_value <= 0) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
-		} else if (!isCorrectChapterOfBook(what_book, num_value)) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Chapter-Number',
+					possible_fixes: ['A chapter number number must be higher or equal to 1'],
+				},
+			};
+		} else if (!isCorrectChapterOfBook(this.current_book!, num_value)) {
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Chapter-Number',
+					possible_fixes: [
+						`The chapter "${num_value}" is not found in ${debugBookName(this.current_book!)}`,
+					],
+				},
+			};
 		}
 
 		const next = this.peek();
@@ -193,19 +226,57 @@ export class StandardEnglishParser extends Parser {
 		const next_next = this.peek();
 		if (next_next === undefined || next_next.kind !== 'num') {
 			// Invalid chapter-range declaration
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Chapter-Range',
+					possible_fixes: [
+						`Use ${printIt(standard_style.allowed_chapter_verse_seperators)} for seperating chapters from verses`,
+					],
+				},
+			};
 		}
 
 		const next_num_value = parseInt(next_next.representation);
 		if (isNaN(next_num_value)) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Chapter-Range',
+					possible_fixes: [
+						`"${next_next.representation}" can not be used for ending a chapter range`,
+					],
+				},
+			};
 		} else if (next_num_value <= 0) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Chapter-Range',
+					possible_fixes: ['An ending Chapter-Range can not be zero'],
+				},
+			};
 		} else if (next_num_value < num_value) {
 			// For example: Luke 12-2  -> it is in an invalid order
-			return { t: null, e: { heading: '', possible_fixes: [] } };
-		} else if (!isCorrectChapterOfBook(what_book, next_num_value)) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Chapter-Range',
+					possible_fixes: [
+						`Invalid order for a chapter-range: '${num_value}' > '${next_num_value}'`,
+					],
+				},
+			};
+		} else if (!isCorrectChapterOfBook(this.current_book!, next_num_value)) {
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Chapter-Number',
+					possible_fixes: [
+						`The chapter "${next_num_value}" is not found in ${debugBookName(this.current_book!)}`,
+					],
+				},
+			};
 		}
 
 		this.consume();
@@ -215,12 +286,24 @@ export class StandardEnglishParser extends Parser {
 	private parse_ordinal_number(): Success<number | null> {
 		const current = this.current();
 		if (current === undefined) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Ordinal Number',
+					possible_fixes: ['You can not end a reference with an ordinal number'],
+				},
+			};
 		}
 
 		const next = this.peek();
 		if (next === undefined) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Ordinal Number',
+					possible_fixes: ['You can not end a reference with an ordinal number'],
+				},
+			};
 		}
 
 		// First | Second ...
@@ -247,8 +330,11 @@ export class StandardEnglishParser extends Parser {
 			return {
 				t: null,
 				e: {
-					heading: '',
-					possible_fixes: [],
+					heading: 'Invalid Ordinal Declaration',
+					possible_fixes: [
+						`An ordinal work should never precede an ordinal abbreviatoon`,
+						`"${current.representation}" can not be with "${next.representation}"`,
+					],
 				},
 			};
 		}
@@ -267,7 +353,10 @@ export class StandardEnglishParser extends Parser {
 		if (isNaN(num_value)) {
 			return {
 				t: null,
-				e: { heading: '', possible_fixes: [] },
+				e: {
+					heading: 'Invalid Ordinal Number',
+					possible_fixes: [`"${current.representation}" is not a number`],
+				},
 			};
 		}
 
@@ -326,8 +415,13 @@ export class StandardEnglishParser extends Parser {
 			// Missmatch -> 1nd | 3st
 			this.consume();
 			return {
-				t: num_value,
-				e: null,
+				t: null,
+				e: {
+					heading: 'Invalid Ordinal Declaration',
+					possible_fixes: [
+						`Number "${num_value}" can not follow a wrong ordinal abbr -> "${next.representation}"`,
+					],
+				},
 			};
 		}
 	}
@@ -345,7 +439,13 @@ export class StandardEnglishParser extends Parser {
 		const current = this.current();
 
 		if (current === undefined || current.kind !== 'ident') {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Ordinal Book',
+					possible_fixes: ['No bookname/identifier was given after the ordinal'],
+				},
+			};
 		}
 
 		// TODO: Apocrypha currently unimplemented
@@ -395,13 +495,34 @@ export class StandardEnglishParser extends Parser {
 			// Missmatch -> 5. Corinthians or Fourth Luke
 			// Or unimplemented (apocryphal) books
 			// Or 1 nd
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Ordinal Book',
+					possible_fixes: [
+						`Found a missmatch for an ordinal with the given bookname`,
+						'Double Check your booknames for something like "5. Corinthians" or "2nd Luke"',
+					],
+				},
+			};
 		}
 
 		if (representation === undefined) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: { heading: 'Invalid Ordinal Book', possible_fixes: ['Could not form a bookname'] },
+			};
 		} else if (!isValidOrdinalBook(representation)) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Ordinal Book',
+					possible_fixes: [
+						`Found a missmatch for an ordinal with the given bookname`,
+						'Double Check your booknames for something like "4. Corinthians" or "2nd Matthew"',
+					],
+				},
+			};
 		} else {
 			return { t: representation, e: null };
 		}
@@ -414,14 +535,22 @@ export class StandardEnglishParser extends Parser {
 			// No trie given
 			return {
 				t: null,
-				e: { heading: '', possible_fixes: [] },
+				e: {
+					heading: 'No Trie given',
+					possible_fixes: [
+						'There seems to be a trie missing, ask the developer or create an issue',
+					],
+				},
 			};
 		}
 
 		let current_node: WordedBookNode | undefined = ref_trie;
+		let path: string[] = [];
 
 		while (this.index < this.source_tokens.length) {
 			const current_word = this.current()?.representation.toLowerCase();
+			path.push(current_word ?? '');
+
 			if (!current_word) break;
 
 			if (current_node[current_word]) {
@@ -451,7 +580,12 @@ export class StandardEnglishParser extends Parser {
 					if (found_key === undefined) {
 						return {
 							t: null,
-							e: { heading: '', possible_fixes: [] },
+							e: {
+								heading: 'Word not found',
+								possible_fixes: [
+									`"${current_word}" was not found, please look for valid booknames`,
+								],
+							},
 						};
 					}
 
@@ -463,7 +597,12 @@ export class StandardEnglishParser extends Parser {
 				} else {
 					return {
 						t: null,
-						e: { heading: '', possible_fixes: [] },
+						e: {
+							heading: 'Word not found',
+							possible_fixes: [
+								`"${current_word}" could not be found, please look for valid booknames`,
+							],
+						},
 					};
 				}
 			}
@@ -511,14 +650,17 @@ export class StandardEnglishParser extends Parser {
 
 		return {
 			t: null,
-			e: { heading: '', possible_fixes: [] },
+			e: {
+				heading: 'Invalid Bookname',
+				possible_fixes: [`Could not find anything with the term "${[...path].join(' ')}"`],
+			},
 		};
 	}
 
 	parseBook(): Success<t_book | null> {
 		const current = this.current();
 		if (current === undefined) {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return { t: null, e: { heading: 'kubba', possible_fixes: [] } };
 		}
 
 		// TODO: Apocrypha currently unimplemented
@@ -618,7 +760,13 @@ export class StandardEnglishParser extends Parser {
 		} else if (booki.zephaniah.has(current.representation)) {
 			return { t: { book: possible_books.Zephaniah }, e: null };
 		} else {
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid bookname',
+					possible_fixes: [`"${current.representation}" didnt match any bookset`],
+				},
+			};
 		}
 	}
 
@@ -628,11 +776,22 @@ export class StandardEnglishParser extends Parser {
 
 		while (this.index < this.source_tokens.length) {
 			const current = this.current();
-			if (!current || current.kind === 'EOL' || current.kind === 'chapter-delimiter') break;
+
+			if (current === undefined || isAtEnd(current)) break;
+			if (current.kind === 'chapter-verse-seperator') {
+				this.consume();
+				continue;
+			}
 
 			const current_num = parseInt(current.representation);
 			if (isNaN(current_num)) {
-				return { t: null, e: { heading: '', possible_fixes: [] } };
+				return {
+					t: null,
+					e: {
+						heading: 'Invalid Verse(s)',
+						possible_fixes: [`"${current.representation}" could not be turned into a number`],
+					},
+				};
 			}
 
 			let lower_notation = '';
@@ -650,16 +809,36 @@ export class StandardEnglishParser extends Parser {
 				const range_end = this.current();
 				if (!range_end || range_end.kind !== 'num') {
 					// invalid range
-					return { t: null, e: { heading: '', possible_fixes: [] } };
+					return {
+						t: null,
+						e: {
+							heading: 'Invalid Verse-Range',
+							possible_fixes: [`"${range_end?.representation}" is not a number`],
+						},
+					};
 				}
 
 				const range_end_num = parseInt(range_end.representation);
 				if (isNaN(range_end_num)) {
 					// invalid range
-					return { t: null, e: { heading: '', possible_fixes: [] } };
+					return {
+						t: null,
+						e: {
+							heading: 'Invalid Verse-Range',
+							possible_fixes: [`"${range_end.representation}" could not be turned into a number`],
+						},
+					};
 				} else if (current_num > range_end_num) {
 					// invalid range from highest to lowest
-					return { t: null, e: { heading: '', possible_fixes: [] } };
+					return {
+						t: null,
+						e: {
+							heading: 'Invalid Verse-Range',
+							possible_fixes: [
+								`Invalid order for a verse-range: '${current_num}' > '${range_end_num}'`,
+							],
+						},
+					};
 				}
 				// this.consume();
 
@@ -692,34 +871,48 @@ export class StandardEnglishParser extends Parser {
 			this.consume();
 
 			const separator = this.current();
-			if (!separator || separator?.kind === 'EOL' || separator?.kind === 'chapter-delimiter') break;
+			if (isAtEnd(separator)) break;
 
 			if (separator?.kind !== 'verse-seperator') {
 				// Either verses or verse-ranges have to end with a verse-seperator!
-				return { t: null, e: { heading: '', possible_fixes: [] } };
+				return {
+					t: null,
+					e: {
+						heading: 'Invalid Verse-Reference',
+						possible_fixes: [
+							`Verses or Verse-Ranges have to end with ${printIt(standard_style.allowed_chapter_verse_seperators)}`,
+						],
+					},
+				};
 			}
 			this.consume();
 		}
 
 		return verses_acc.length === 0
-			? { t: null, e: { heading: '', possible_fixes: [] } }
+			? {
+					t: null,
+					e: {
+						heading: 'Invalid Verse-Reference',
+						possible_fixes: ['No verses could be collected'],
+					},
+				}
 			: { t: verses_acc, e: null };
 	}
 
 	parseChapterVerse(): Success<t_chapter_verse | null> {
 		if (this.current_book === undefined) {
 			// It can not start with a chapter... -> e.g 12-13; Luke 1:1
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return { t: null, e: { heading: 'mia', possible_fixes: [] } };
 		}
 
-		const chapt = this.parseChapterNumber(this.current_book);
+		const chapt = this.parseChapterNumber();
 		if (chapt.t === null) {
 			return { t: null, e: chapt.e };
 		}
 
 		this.consume();
 		const seperator = this.current();
-		if (seperator === undefined || seperator.kind === 'chapter-delimiter') {
+		if (isAtEnd(seperator)) {
 			return { t: { chapter: chapt.t }, e: null };
 		}
 
@@ -727,7 +920,7 @@ export class StandardEnglishParser extends Parser {
 
 		if (seperator?.kind !== 'chapter-verse-seperator') {
 			// No ":", duuh
-			return { t: null, e: { heading: '', possible_fixes: [] } };
+			return { t: null, e: { heading: 'lolo', possible_fixes: [] } };
 		}
 
 		const verses = this.parseVerses();
@@ -736,4 +929,8 @@ export class StandardEnglishParser extends Parser {
 		}
 		return { t: { chapter: chapt.t, verses: verses.t }, e: null };
 	}
+}
+
+function isAtEnd(tok: Token | undefined): boolean {
+	return !tok || tok.kind === 'chapter-delimiter' || tok.kind === 'EOL';
 }

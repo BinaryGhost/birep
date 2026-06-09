@@ -22,3 +22,7 @@ export interface LanguageOptions {
 	allowed_number_sets: Set<string>;
 	allowed_character_sets: Set<string>;
 }
+
+export function printIt(thing: Set<string> | string[]): void {
+	console.log([...thing].map((it) => `"${it}"`).join(', '));
+}

@@ -163,14 +163,14 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 									book: possible_ordinal_books.Thessalonians,
 									ordinal: 1,
 								},
-								timothy: {
-									book: possible_ordinal_books.Timothy,
-									ordinal: 1,
-								},
 								corinthians: {
 									book: possible_ordinal_books.Corinthians,
 									ordinal: 1,
 								},
+							},
+							timothy: {
+								book: possible_ordinal_books.Timothy,
+								ordinal: 1,
 							},
 						},
 					},
@@ -219,14 +219,14 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 									book: possible_ordinal_books.Thessalonians,
 									ordinal: 2,
 								},
-								timothy: {
-									book: possible_ordinal_books.Timothy,
-									ordinal: 2,
-								},
 								corinthians: {
 									book: possible_ordinal_books.Corinthians,
 									ordinal: 2,
 								},
+							},
+							timothy: {
+								book: possible_ordinal_books.Timothy,
+								ordinal: 2,
 							},
 						},
 					},

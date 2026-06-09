@@ -56,7 +56,6 @@ export function isCorrectChapterOfBook(
 	chapter_integer: number,
 ): boolean {
 	// TODO: Apocrypha currently not handled
-
 	if ('ordinal' in book) {
 		switch (book.book) {
 			case possible_ordinal_books.Chronicles:
@@ -243,6 +242,7 @@ export function isCorrectChapterOfBook(
 			case possible_books.Zephaniah:
 				return chapter_integer >= 1 && chapter_integer <= 3;
 			default:
+				// console.log('IMPOSSIBLE');
 				return false;
 		}
 	}
@@ -762,5 +762,15 @@ export class ToRepresentation {
 
 	_native_(bk: t_book, psalm_chapter_number?: number): string | undefined {
 		return undefined;
+	}
+}
+
+export function debugBookName(book: t_book | t_ordinal_book): void {
+	if ('ordinal' in book) {
+		const book = new ToOrdinalRepresentation();
+		console.log('[DEBUG]: ', book);
+	} else {
+		const book = new ToRepresentation();
+		console.log('[DEBUG]: ', book);
 	}
 }
