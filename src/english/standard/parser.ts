@@ -69,14 +69,28 @@ export class StandardEnglishParser extends Parser {
 	parseReference(): Success<t_reference | null> {
 		const current = this.current();
 		if (current === undefined) {
-			return { t: null, e: { heading: 'akj', possible_fixes: [] } };
+			return {
+				t: null,
+				e: { heading: 'Invalid Reference', possible_fixes: ['References can not be empty'] },
+			};
 		} else if (current.kind !== 'num' && current.kind !== 'ident') {
-			return { t: null, e: { heading: 'gg', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Reference',
+					possible_fixes: [
+						'References must start with a number (followed with a bookname) or a bookname',
+					],
+				},
+			};
 		}
 
 		const next = this.peek();
 		if (next === undefined) {
-			return { t: null, e: { heading: 'dada', possible_fixes: [] } };
+			return {
+				t: null,
+				e: { heading: 'Invalid Reference', possible_fixes: ['Reference is to short to be usable'] },
+			};
 		}
 
 		//
@@ -412,16 +426,12 @@ export class StandardEnglishParser extends Parser {
 				e: null,
 			};
 		} else {
-			// Missmatch -> 1nd | 3st
+			// NOTE: This isnt wrong here, since the english ordinals can also
+			//       be like "2 Peter"
 			this.consume();
 			return {
-				t: null,
-				e: {
-					heading: 'Invalid Ordinal Declaration',
-					possible_fixes: [
-						`Number "${num_value}" can not follow a wrong ordinal abbr -> "${next.representation}"`,
-					],
-				},
+				t: num_value,
+				e: null,
 			};
 		}
 	}
@@ -554,8 +564,15 @@ export class StandardEnglishParser extends Parser {
 			if (!current_word) break;
 
 			if (current_node[current_word]) {
-				current_node = current_node[current_word] as WordedBookNode;
-				this.consume();
+				const child = current_node[current_word] as WordedBookNode;
+				// If the child is a terminal (has a numeric `book` or `ordinal`), do not consume
+				// here — leave the token for the caller to consume for consistency.
+				if ((child['book'] && typeof child['book'] === 'number') || child['ordinal']) {
+					current_node = child;
+				} else {
+					current_node = child;
+					this.consume();
+				}
 			} else {
 				const all_keys = Object.keys(current_node).filter((key) => key.includes('/'));
 
@@ -589,8 +606,13 @@ export class StandardEnglishParser extends Parser {
 						};
 					}
 
-					current_node = current_node[found_key] as WordedBookNode;
-					this.consume();
+					const child = current_node[found_key] as WordedBookNode;
+					if ((child['book'] && typeof child['book'] === 'number') || child['ordinal']) {
+						current_node = child;
+					} else {
+						current_node = child;
+						this.consume();
+					}
 				} else if (current_node['_else']) {
 					current_node = current_node['_else'] as WordedBookNode;
 					this.consume();
@@ -607,7 +629,11 @@ export class StandardEnglishParser extends Parser {
 				}
 			}
 
-			if (current_node['ordinal']) {
+			if (
+				current_node['ordinal'] &&
+				current_node['book'] &&
+				typeof current_node['book'] === 'number'
+			) {
 				return {
 					t: {
 						book: (current_node as unknown as t_ordinal_book).book,
@@ -615,7 +641,7 @@ export class StandardEnglishParser extends Parser {
 					},
 					e: null,
 				};
-			} else if (current_node['book']) {
+			} else if (current_node['book'] && typeof current_node['book'] === 'number') {
 				return {
 					t: {
 						book: (current_node as unknown as t_book).book,
@@ -902,7 +928,13 @@ export class StandardEnglishParser extends Parser {
 	parseChapterVerse(): Success<t_chapter_verse | null> {
 		if (this.current_book === undefined) {
 			// It can not start with a chapter... -> e.g 12-13; Luke 1:1
-			return { t: null, e: { heading: 'mia', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Chapter-Verse',
+					possible_fixes: ['A reference has to start with a bookname'],
+				},
+			};
 		}
 
 		const chapt = this.parseChapterNumber();
@@ -920,7 +952,15 @@ export class StandardEnglishParser extends Parser {
 
 		if (seperator?.kind !== 'chapter-verse-seperator') {
 			// No ":", duuh
-			return { t: null, e: { heading: 'lolo', possible_fixes: [] } };
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Chapter-Verse',
+					possible_fixes: [
+						`Please use ${printIt(standard_style.allowed_chapter_verse_seperators)} as your chapter-verse-seperator`,
+					],
+				},
+			};
 		}
 
 		const verses = this.parseVerses();

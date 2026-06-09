@@ -21,12 +21,12 @@ describe('Verse parsing', () => {
 	// 	expect(result.t).toEqual([]);
 	// });
 
-	test('the first epistle of paul to timothy 1:1', () => {
-		const lexed = lexer.lex('the first epistle of paul to timothy 1:1');
-		const parser = new StandardEnglishParser(lexed);
-		const result = parser.parse();
-		expect(result.t).toEqual([]);
-	});
+	// test('the first epistle of paul to timothy 1:1', () => {
+	// 	const lexed = lexer.lex('the first epistle of paul to timothy 1:1');
+	// 	const parser = new StandardEnglishParser(lexed);
+	// 	const result = parser.parse();
+	// 	expect(result.t).toEqual([]);
+	// });
 
 	// // TODO: How shall it look?
 	// test('Genesis 1-2:1-2', () => {

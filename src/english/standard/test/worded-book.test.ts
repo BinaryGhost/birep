@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test';
 import { StandardEnglishParser } from '../parser';
 import { StandardEnglishLexer } from '../lexer';
 import { Standard_WordedBookTrie } from '../books-worded';
-import { possible_books } from '../../../internal/books/book-type';
+import { possible_books, possible_ordinal_books } from '../../../internal/books/book-type';
 import { standard_style } from '../lang';
 
 describe('Test the trie', () => {
@@ -32,5 +32,14 @@ describe('Test the trie', () => {
 
 		expect(result.e).toBeNull();
 		expect(result.t).toEqual({ book: possible_books.Mark });
+	});
+	test('the first epistle of paul to timothy', () => {
+		const lexed = lexer.lex('the first epistle of paul to timothy');
+
+		const parser = new StandardEnglishParser(lexed);
+		const result = parser.parseWordedBookname(Standard_WordedBookTrie);
+
+		expect(result.e).toBeNull();
+		expect(result.t).toEqual({ book: possible_ordinal_books.Timothy, ordinal: 1 });
 	});
 });
