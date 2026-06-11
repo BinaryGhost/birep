@@ -23,6 +23,12 @@ export interface LanguageOptions {
 	allowed_character_sets: Set<string>;
 }
 
-export function printIt(thing: Set<string> | string[]): void {
-	console.log([...thing].map((it) => `"${it}"`).join(', '));
+export function printIt(thing: Set<string> | string[]): string {
+	if ([...thing].length === 1) {
+		return `"${[...thing][0]}"`;
+	} else if (thing) {
+		return [...thing].map((it) => `"${it}"`).join(', ');
+	} else {
+		return '"..."';
+	}
 }

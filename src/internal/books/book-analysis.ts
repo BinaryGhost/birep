@@ -3,6 +3,7 @@ import {
 	type t_ordinal_book,
 	possible_ordinal_books,
 	possible_books,
+	type t_reference,
 } from './book-type';
 import { protestant } from './canon';
 
@@ -765,12 +766,39 @@ export class ToRepresentation {
 	}
 }
 
-export function debugBookName(book: t_book | t_ordinal_book): void {
+export function giveBookName(book: t_book | t_ordinal_book): string {
 	if ('ordinal' in book) {
-		const book = new ToOrdinalRepresentation();
-		console.log('[DEBUG]: ', book);
+		const booki = new ToOrdinalRepresentation();
+		return booki.english(book) ?? '';
 	} else {
-		const book = new ToRepresentation();
-		console.log('[DEBUG]: ', book);
+		const booki = new ToRepresentation();
+		return booki.english(book) ?? '';
 	}
+}
+
+export function reconstructReferenceForTesting(ref: t_reference[]): string {
+	let all_ref: string = '';
+	for (let i = 0; i < ref.length; i++) {
+		const rf = ref[i];
+		if (rf === undefined) continue;
+
+		if (!ref[i]?.book || ref[i]?.book === undefined) continue;
+
+		const bookname = giveBookName(rf.book);
+		const chapter = `${ref[i]?.reference.chapter.lower_end}-${ref[i]?.reference.chapter.higher_end}`;
+
+		if (rf.reference.verses === undefined) {
+			all_ref += `${bookname} ${chapter}; `;
+			continue;
+		}
+
+		let verse: string = '';
+		for (let j = 0; j < rf.reference.verses.length; j++) {
+			const ver_arr = rf.reference.verses;
+			verse += `${ver_arr[j]?.lower_verse}${ver_arr[j]?.lower_verse_notation}-${ver_arr[j]?.higher_verse}${ver_arr[j]?.higher_verse_notation}${j < ver_arr.length - 1 ? ',' : ';'}`;
+		}
+
+		all_ref += `${bookname} ${chapter}:${verse} `;
+	}
+	return all_ref.trim();
 }

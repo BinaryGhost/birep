@@ -57,7 +57,7 @@ describe('Recognise Ordinal Books', () => {
 		const parser = new StandardEnglishParser(lexed);
 
 		const result = parser.parseOrdinalBook();
-		console.log('result: ', result);
+		// console.log('result: ', result);
 		expect(result.t).toEqual({
 			book: possible_ordinal_books.Peter,
 			ordinal: 2,

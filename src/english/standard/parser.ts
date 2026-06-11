@@ -15,7 +15,7 @@ import {
 	type WordedBookNode,
 } from '../../internal/books/book-type';
 import {
-	debugBookName,
+	giveBookName,
 	isCorrectChapterOfBook,
 	isValidOrdinalBook,
 } from '../../internal/books/book-analysis';
@@ -47,7 +47,7 @@ export class StandardEnglishParser extends Parser {
 			if (!current || current.kind === 'EOL') break;
 
 			const reference = this.parseReference();
-			console.log('reference: ', reference);
+			// console.log('reference: ', reference);
 			if (reference.t === null) {
 				return { t: null, e: reference.e };
 			}
@@ -225,7 +225,7 @@ export class StandardEnglishParser extends Parser {
 				e: {
 					heading: 'Invalid Chapter-Number',
 					possible_fixes: [
-						`The chapter "${num_value}" is not found in ${debugBookName(this.current_book!)}`,
+						`The chapter "${num_value}" is not found in ${giveBookName(this.current_book!)}`,
 					],
 				},
 			};
@@ -287,7 +287,7 @@ export class StandardEnglishParser extends Parser {
 				e: {
 					heading: 'Invalid Chapter-Number',
 					possible_fixes: [
-						`The chapter "${next_num_value}" is not found in ${debugBookName(this.current_book!)}`,
+						`The chapter "${next_num_value}" is not found in ${giveBookName(this.current_book!)}`,
 					],
 				},
 			};
@@ -958,6 +958,7 @@ export class StandardEnglishParser extends Parser {
 					heading: 'Invalid Chapter-Verse',
 					possible_fixes: [
 						`Please use ${printIt(standard_style.allowed_chapter_verse_seperators)} as your chapter-verse-seperator`,
+						`Failed with "${seperator?.representation}" at '${seperator?.pos}'`,
 					],
 				},
 			};
