@@ -252,21 +252,70 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 				},
 			},
 		},
+		song: {
+			of: {
+				the: {
+					'three/3': {
+						'youths/children/jews': {
+							book: possible_books.Song_Of_The_Three_Young_Men,
+						},
+						holy: {
+							children: {
+								book: possible_books.Song_Of_The_Three_Young_Men,
+							},
+						},
+						children: {
+							book: possible_books.Song_Of_The_Three_Young_Men,
+						},
+					},
+				},
+				'thr./three': {
+					book: possible_books.Song_Of_The_Three_Young_Men,
+				},
+				solomon: {
+					book: possible_books.Songs_of_Solomon,
+				},
+			},
+			'three/thr.': {
+				book: possible_books.Song_Of_The_Three_Young_Men,
+			},
+		},
+	},
+	'sg.': {
+		of: {
+			'3': {
+				'childr.': {
+					book: possible_books.Song_Of_The_Three_Young_Men,
+				},
+			},
+		},
 	},
 	song: {
 		of: {
 			the: {
 				'three/3': {
-					young: {
-						men: {
+					'youths/children/jews': {
+						book: possible_books.Song_Of_The_Three_Young_Men,
+					},
+					holy: {
+						children: {
 							book: possible_books.Song_Of_The_Three_Young_Men,
 						},
 					},
+					children: {
+						book: possible_books.Song_Of_The_Three_Young_Men,
+					},
 				},
+			},
+			'thr./three': {
+				book: possible_books.Song_Of_The_Three_Young_Men,
 			},
 			solomon: {
 				book: possible_books.Songs_of_Solomon,
 			},
+		},
+		'three/thr.': {
+			book: possible_books.Song_Of_The_Three_Young_Men,
 		},
 	},
 	canticle: {
@@ -286,6 +335,13 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 			book: possible_books.Wisdom_Of_Solomon,
 		},
 	},
+	'wisd.': {
+		of: {
+			'sol.': {
+				book: possible_books.Wisdom_Of_Solomon,
+			},
+		},
+	},
 	bel: {
 		and: {
 			the: {
@@ -293,6 +349,11 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 					book: possible_books.Bel_And_The_Dragon,
 				},
 			},
+		},
+	},
+	'let./ltr./ep.': {
+		'jer.': {
+			book: possible_books.Letter_Of_Jeremiah,
 		},
 	},
 	letter: {
@@ -323,6 +384,9 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 			daniel: {
 				book: possible_books.Bel_And_The_Dragon,
 			},
+			esther: {
+				book: possible_books.Esther_Greek,
+			},
 		},
 	},
 	prayer: {
@@ -345,6 +409,11 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 		},
 		'3': {
 			book: possible_books.Psalms_152_To_155,
+		},
+	},
+	add: {
+		'esth./es/aes./addesth.': {
+			book: possible_books.Esther_Greek,
 		},
 	},
 };

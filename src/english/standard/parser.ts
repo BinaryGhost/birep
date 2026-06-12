@@ -2,7 +2,7 @@ import { Parser } from '../../internal/parser';
 import type { Success } from '../../internal/errors';
 import type { Token } from '../../internal/lexing';
 import { standard_style } from './lang';
-import * as booki from './book-index';
+import { index_books } from './book-index';
 import {
 	possible_books,
 	possible_ordinal_books,
@@ -19,7 +19,7 @@ import {
 	isCorrectChapterOfBook,
 	isValidOrdinalBook,
 } from '../../internal/books/book-analysis';
-import { Standard_WordedBookTrie } from './books-worded';
+import { Standard_WordedBookTrie } from './worded-books';
 import { printIt } from '../../internal/lang-type';
 
 export class StandardEnglishParser extends Parser {
@@ -461,42 +461,42 @@ export class StandardEnglishParser extends Parser {
 		// TODO: Apocrypha currently unimplemented
 
 		let representation: t_ordinal_book | undefined;
-		if (booki.johns_epistles.has(current.representation)) {
+		if (index_books.John_epistles.has(current.representation)) {
 			representation = {
 				book: possible_ordinal_books.John,
 				ordinal: ordinalness,
 			};
-		} else if (booki.peter.has(current.representation)) {
+		} else if (index_books.Peter.has(current.representation)) {
 			representation = {
 				book: possible_ordinal_books.Peter,
 				ordinal: ordinalness,
 			};
-		} else if (booki.timothy.has(current.representation)) {
+		} else if (index_books.Timothy.has(current.representation)) {
 			representation = {
 				book: possible_ordinal_books.Timothy,
 				ordinal: ordinalness,
 			};
-		} else if (booki.thessalonians.has(current.representation)) {
+		} else if (index_books.Thessalonians.has(current.representation)) {
 			representation = {
 				book: possible_ordinal_books.Thessalonians,
 				ordinal: ordinalness,
 			};
-		} else if (booki.corinthians.has(current.representation)) {
+		} else if (index_books.Corinthians.has(current.representation)) {
 			representation = {
 				book: possible_ordinal_books.Corinthians,
 				ordinal: ordinalness,
 			};
-		} else if (booki.chronicles.has(current.representation)) {
+		} else if (index_books.Chronicles.has(current.representation)) {
 			representation = {
 				book: possible_ordinal_books.Chronicles,
 				ordinal: ordinalness,
 			};
-		} else if (booki.samuel.has(current.representation)) {
+		} else if (index_books.Samuel.has(current.representation)) {
 			representation = {
 				book: possible_ordinal_books.Samuel,
 				ordinal: ordinalness,
 			};
-		} else if (booki.moses_ord.has(current.representation)) {
+		} else if (index_books.Moses_ord.has(current.representation)) {
 			representation = {
 				book: possible_ordinal_books.Moses,
 				ordinal: ordinalness,
@@ -691,100 +691,102 @@ export class StandardEnglishParser extends Parser {
 
 		// TODO: Apocrypha currently unimplemented
 
-		if (booki.acts.has(current.representation)) {
+		if (index_books.Acts.has(current.representation)) {
 			return { t: { book: possible_books.Acts }, e: null };
-		} else if (booki.amos.has(current.representation)) {
+		} else if (index_books.Amos.has(current.representation)) {
 			return { t: { book: possible_books.Amos }, e: null };
-		} else if (booki.colossians.has(current.representation)) {
+		} else if (index_books.Colossians.has(current.representation)) {
 			return { t: { book: possible_books.Colossians }, e: null };
-		} else if (booki.daniel.has(current.representation)) {
+		} else if (index_books.Daniel.has(current.representation)) {
 			return { t: { book: possible_books.Daniel }, e: null };
-		} else if (booki.deuteronomy.has(current.representation)) {
+		} else if (index_books.Deuteronomy.has(current.representation)) {
 			return { t: { book: possible_books.Deuteronomy }, e: null };
-		} else if (booki.ecclesiastes.has(current.representation)) {
+		} else if (index_books.Ecclesiastes.has(current.representation)) {
 			return { t: { book: possible_books.Ecclesiastes }, e: null };
-		} else if (booki.ephesians.has(current.representation)) {
+		} else if (index_books.Ephesians.has(current.representation)) {
 			return { t: { book: possible_books.Ephesians }, e: null };
-		} else if (booki.esther.has(current.representation)) {
+		} else if (index_books.Esther.has(current.representation)) {
 			return { t: { book: possible_books.Esther }, e: null };
-		} else if (booki.exodus.has(current.representation)) {
+		} else if (index_books.Exodus.has(current.representation)) {
 			return { t: { book: possible_books.Exodus }, e: null };
-		} else if (booki.ezra.has(current.representation)) {
+		} else if (index_books.Ezra.has(current.representation)) {
 			return { t: { book: possible_books.Ezra }, e: null };
-		} else if (booki.ezekiel.has(current.representation)) {
+		} else if (index_books.Ezekiel.has(current.representation)) {
 			return { t: { book: possible_books.Ezekiel }, e: null };
-		} else if (booki.galatians.has(current.representation)) {
+		} else if (index_books.Galatians.has(current.representation)) {
 			return { t: { book: possible_books.Galatians }, e: null };
-		} else if (booki.genesis.has(current.representation)) {
+		} else if (index_books.Genesis.has(current.representation)) {
 			return { t: { book: possible_books.Genesis }, e: null };
-		} else if (booki.habakkuk.has(current.representation)) {
+		} else if (index_books.Habakkuk.has(current.representation)) {
 			return { t: { book: possible_books.Habakkuk }, e: null };
-		} else if (booki.haggai.has(current.representation)) {
+		} else if (index_books.Haggai.has(current.representation)) {
 			return { t: { book: possible_books.Haggai }, e: null };
-		} else if (booki.hebrews.has(current.representation)) {
+		} else if (index_books.Hebrews.has(current.representation)) {
 			return { t: { book: possible_books.Hebrews }, e: null };
-		} else if (booki.hosea.has(current.representation)) {
+		} else if (index_books.Hosea.has(current.representation)) {
 			return { t: { book: possible_books.Hosea }, e: null };
-		} else if (booki.isaiah.has(current.representation)) {
+		} else if (index_books.Isaiah.has(current.representation)) {
 			return { t: { book: possible_books.Isaiah }, e: null };
-		} else if (booki.james.has(current.representation)) {
+		} else if (index_books.James.has(current.representation)) {
 			return { t: { book: possible_books.James }, e: null };
-		} else if (booki.jeremiah.has(current.representation)) {
+		} else if (index_books.Jeremiah.has(current.representation)) {
 			return { t: { book: possible_books.Jeremiah }, e: null };
-		} else if (booki.job.has(current.representation)) {
+		} else if (index_books.Job.has(current.representation)) {
 			return { t: { book: possible_books.Job }, e: null };
-		} else if (booki.joel.has(current.representation)) {
+		} else if (index_books.Joel.has(current.representation)) {
 			return { t: { book: possible_books.Joel }, e: null };
-		} else if (booki.john.has(current.representation)) {
+		} else if (index_books.John.has(current.representation)) {
 			return { t: { book: possible_books.John }, e: null };
-		} else if (booki.joshua.has(current.representation)) {
+		} else if (index_books.Josua.has(current.representation)) {
 			return { t: { book: possible_books.Josua }, e: null };
-		} else if (booki.jude.has(current.representation)) {
+		} else if (index_books.Jude.has(current.representation)) {
 			return { t: { book: possible_books.Jude }, e: null };
-		} else if (booki.judges.has(current.representation)) {
+		} else if (index_books.Judges.has(current.representation)) {
 			return { t: { book: possible_books.Judges }, e: null };
-		} else if (booki.lamentations.has(current.representation)) {
+		} else if (index_books.Lamentations.has(current.representation)) {
 			return { t: { book: possible_books.Lamentations }, e: null };
-		} else if (booki.luke.has(current.representation)) {
+		} else if (index_books.Luke.has(current.representation)) {
 			return { t: { book: possible_books.Luke }, e: null };
-		} else if (booki.leviticus.has(current.representation)) {
+		} else if (index_books.Leviticus.has(current.representation)) {
 			return { t: { book: possible_books.Leviticus }, e: null };
-		} else if (booki.malachi.has(current.representation)) {
+		} else if (index_books.Malachi.has(current.representation)) {
 			return { t: { book: possible_books.Malachi }, e: null };
-		} else if (booki.mark.has(current.representation)) {
+		} else if (index_books.Mark.has(current.representation)) {
 			return { t: { book: possible_books.Mark }, e: null };
-		} else if (booki.matthew.has(current.representation)) {
+		} else if (index_books.Matthew.has(current.representation)) {
 			return { t: { book: possible_books.Matthew }, e: null };
-		} else if (booki.micah.has(current.representation)) {
+		} else if (index_books.Micah.has(current.representation)) {
 			return { t: { book: possible_books.Micah }, e: null };
-		} else if (booki.nahum.has(current.representation)) {
+		} else if (index_books.Nahum.has(current.representation)) {
 			return { t: { book: possible_books.Nahum }, e: null };
-		} else if (booki.nehemia.has(current.representation)) {
+		} else if (index_books.Nehemia.has(current.representation)) {
 			return { t: { book: possible_books.Nehemia }, e: null };
-		} else if (booki.numbers.has(current.representation)) {
+		} else if (index_books.Numbers.has(current.representation)) {
 			return { t: { book: possible_books.Numbers }, e: null };
-		} else if (booki.obadiah.has(current.representation)) {
+		} else if (index_books.Obadiah.has(current.representation)) {
 			return { t: { book: possible_books.Obadiah }, e: null };
-		} else if (booki.philemon.has(current.representation)) {
+		} else if (index_books.Philemon.has(current.representation)) {
 			return { t: { book: possible_books.Philemon }, e: null };
-		} else if (booki.philippians.has(current.representation)) {
+		} else if (index_books.Philippians.has(current.representation)) {
 			return { t: { book: possible_books.Philippians }, e: null };
-		} else if (booki.proverbs.has(current.representation)) {
+		} else if (index_books.Proverbs.has(current.representation)) {
 			return { t: { book: possible_books.Proverbs }, e: null };
-		} else if (booki.psalms.has(current.representation)) {
+		} else if (index_books.Psalms.has(current.representation)) {
 			return { t: { book: possible_books.Psalms }, e: null };
-		} else if (booki.revelation.has(current.representation)) {
+		} else if (index_books.Revelation.has(current.representation)) {
 			return { t: { book: possible_books.Revelation }, e: null };
-		} else if (booki.romans.has(current.representation)) {
+		} else if (index_books.Romans.has(current.representation)) {
 			return { t: { book: possible_books.Romans }, e: null };
-		} else if (booki.ruth.has(current.representation)) {
+		} else if (index_books.Ruth.has(current.representation)) {
 			return { t: { book: possible_books.Ruth }, e: null };
-		} else if (booki.titus.has(current.representation)) {
+		} else if (index_books.Titus.has(current.representation)) {
 			return { t: { book: possible_books.Titus }, e: null };
-		} else if (booki.zechariah.has(current.representation)) {
+		} else if (index_books.Zechariah.has(current.representation)) {
 			return { t: { book: possible_books.Zechariah }, e: null };
-		} else if (booki.zephaniah.has(current.representation)) {
+		} else if (index_books.Zephaniah.has(current.representation)) {
 			return { t: { book: possible_books.Zephaniah }, e: null };
+		} else if (index_books.Songs_Of_Solomon.has(current?.representation)) {
+			return { t: { book: possible_books.Songs_of_Solomon }, e: null };
 		} else {
 			return {
 				t: null,

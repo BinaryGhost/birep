@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { StandardEnglishParser } from '../parser';
 import { StandardEnglishLexer } from '../lexer';
-import { Standard_WordedBookTrie } from '../books-worded';
+import { Standard_WordedBookTrie } from '../worded-books';
 import { possible_books, possible_ordinal_books } from '../../../internal/books/book-type';
 import { standard_style } from '../lang';
 

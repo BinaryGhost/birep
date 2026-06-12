@@ -1,141 +1,96 @@
-import type { index_bookset, index_ordinal_bookset } from '../../internal/books/book-type';
-import * as full from './full-books';
+import { books as full } from '../booksets/full-books';
+import { books as ob } from '../booksets/other-books';
+import type { IndexBookset } from '../../internal/books/book-type';
 
-//
-// Old Testament
-export const moses_ord: index_ordinal_bookset = new Set(full.moses_ord);
-export const genesis: index_bookset = new Set(full.genesis);
-export const exodus: index_bookset = new Set(full.exodus);
-export const leviticus: index_bookset = new Set(full.levitcius);
-export const numbers: index_bookset = new Set(full.numbers);
-export const deuteronomy: index_bookset = new Set(full.deuteronomy);
-export const joshua: index_bookset = new Set(full.joshua);
-export const judges: index_bookset = new Set(full.judges);
-export const ruth: index_bookset = new Set(full.ruth);
-export const samuel: index_ordinal_bookset = new Set(full.samuel);
-export const kings: index_ordinal_bookset = new Set(full.kings);
-export const chronicles: index_ordinal_bookset = new Set(full.chronicles);
-export const ezra: index_bookset = new Set(full.ezra);
-export const nehemia: index_bookset = new Set(full.nehemia);
-export const esther: index_bookset = new Set(full.esther);
-export const job: index_bookset = new Set(full.job);
-export const psalms: index_bookset = new Set(full.psalms);
-export const proverbs: index_bookset = new Set(full.proverbs);
-export const ecclesiastes: index_bookset = new Set(full.ecclesiastes);
-// Song_of_Solomon -> Song of Solomon | Canticle of Canticles
-export const isaiah: index_bookset = new Set(full.isaiah);
-export const jeremiah: index_bookset = new Set(full.jeremiah);
-export const lamentations: index_bookset = new Set(full.lamentations);
-export const ezekiel: index_bookset = new Set(full.ezekiel);
-export const daniel: index_bookset = new Set(full.daniel);
-export const hosea: index_bookset = new Set(full.hosea);
-export const joel: index_bookset = new Set(full.joel);
-export const amos: index_bookset = new Set(full.amos);
-export const obadiah: index_bookset = new Set(full.obadiah);
-export const jonah: index_bookset = new Set(full.jonah);
-export const micah: index_bookset = new Set(full.micah);
-export const nahum: index_bookset = new Set(full.nahum);
-export const habakkuk: index_bookset = new Set(full.habakkuk);
-export const zephaniah: index_bookset = new Set(full.zephaniah);
-export const haggai: index_bookset = new Set(full.haggai);
-export const zechariah: index_bookset = new Set(full.zechariah);
-export const malachi: index_bookset = new Set(full.malachi);
-
-//
-// New Testament
-export const matthew: index_bookset = new Set(full.matthew);
-export const mark: index_bookset = new Set(full.mark);
-export const luke: index_bookset = new Set(full.luke);
-export const john: index_bookset = new Set(full.john);
-export const acts: index_bookset = new Set(full.acts);
-export const romans: index_bookset = new Set(full.romans);
-export const corinthians: index_ordinal_bookset = new Set(full.corinthians);
-export const galatians: index_bookset = new Set(full.galatians);
-export const ephesians: index_bookset = new Set(full.ephesians);
-export const philippians: index_bookset = new Set(full.philippians);
-export const colossians: index_bookset = new Set(full.colossians);
-export const thessalonians: index_ordinal_bookset = new Set(full.thessalonians);
-export const timothy: index_ordinal_bookset = new Set(full.timothy);
-export const titus: index_bookset = new Set(full.titus);
-export const philemon: index_bookset = new Set(full.philemon);
-export const hebrews: index_bookset = new Set(full.hebrews);
-export const james: index_bookset = new Set(full.james);
-export const peter: index_ordinal_bookset = new Set(full.peter);
-export const johns_epistles: index_ordinal_bookset = new Set(full.johns_epistles);
-export const jude: index_bookset = new Set(full.jude);
-export const revelation: index_bookset = new Set(full.revelation);
-
-//
-// Apocrypha
-export const tobit: index_bookset = new Set(full.tobit);
-export const judith: index_bookset = new Set(full.judith);
-export const esther_greek: index_bookset = new Set(['']); // TODO: Esther Greek | Greek Esther
-export const wisdom_of_solomon: index_bookset = new Set(['']); // TODO: Wisdom | Wisdom of Solomon
-
-/**
- * Ecclesiasticus or Jesus son of Sirach
- */
-export const sirach: index_bookset = new Set(full.sirach);
-
-/**
- * 5 chapters in Orthodox Bibles (LJE is separate); 
- * 6 chapters in Catholic Bibles (includes LJE); called 1
-Baruch in Syriac Bibles 
- */
-export const baruch: index_bookset = new Set(full.baruch);
-
-/**
- * Sometimes included in Baruch; called "Rest of
-Jeremiah" in Ethiopia
- */
-export const letter_of_jeremiah: index_bookset = new Set(['']); // TODO: Letter of Jeremiah
-
-/**
- * Includes the Prayer of Azariah; sometimes included in
-Greek Daniel 
- */
-export const song_of_the_three_young_men: index_bookset = new Set(['']); // TODO: Song of the three young men | Other
-
-/**
- * Sometimes included in Greek Daniel
- */
-export const susanna: index_bookset = new Set(full.susanna);
-
-/**
- * Sometimes included in Greek Daniel; called "Rest of
-Daniel" in Ethiopia 
- */
-export const bel_and_the_dragon: index_bookset = new Set(['']); // TODO: Bel and the Dragon
-
-/**
- * For orthodox and catholic bibles
- */
-export const maccabees: index_ordinal_bookset = new Set(['Maccabees']);
-
-/**
- * 1 esdras (greek) -> The 9 chapter book of Greek Ezra in the LXX, called 2
-Esdras in Russian Bibles, and called 3 Esdras in the
-Vulgate; when Ezra-Nehemiah is one book use EZR
- * 2 esdras (latin) -> The 16 chapter book of Latin Esdras called 3 Esdras in
-Russian Bibles and called 4 Esdras in the Vulgate; for
-the 12 chapter Apocalypse of Ezra use EZA
- */
-export const esdras: index_ordinal_bookset = new Set(['Esdras']);
-
-/**
- * Sometimes appended to 2 Chronicles, included in
-Orthodox Bibles 
- */
-export const prayer_of_manasseh: index_bookset = new Set(['']); // TODO: Prayer of Manasseh
-
-/**
- * An additional Psalm in the Septuagint, appended to
-Psalms in Orthodox Bibles 
- */
-export const psalm_151: index_bookset = new Set(['']); // TODO: Handle this exceptional case
-
-/**
- * A Latin Vulgate book, found in the Vulgate and some
-medieval Catholic translations
- */
-export const letter_to_the_laodiceans: index_bookset = new Set(['']); // TODO: Letter/Epistle to the Laodiceans
+export const index_books: IndexBookset = {
+	Moses_ord: new Set([...full.Moses_ord, ...ob.Moses_ord]),
+	Genesis: new Set([...full.Genesis, ...ob.Genesis]),
+	Exodus: new Set([...full.Exodus, ...ob.Exodus]),
+	Leviticus: new Set([...full.Leviticus, ...ob.Leviticus]),
+	Numbers: new Set([...full.Numbers, ...ob.Numbers]),
+	Deuteronomy: new Set([...full.Deuteronomy, ...ob.Deuteronomy]),
+	Josua: new Set([...full.Josua, ...ob.Josua]),
+	Judges: new Set([...full.Judges, ...ob.Judges]),
+	Ruth: new Set([...full.Ruth, ...ob.Ruth]),
+	Samuel: new Set([...full.Samuel, ...ob.Samuel]),
+	Kings: new Set([...full.Kings, ...ob.Kings]),
+	Chronicles: new Set([...full.Chronicles, ...ob.Chronicles]),
+	Ezra: new Set([...full.Ezra, ...ob.Ezra]),
+	Nehemia: new Set([...full.Nehemia, ...ob.Nehemia]),
+	Esther: new Set([...full.Esther, ...ob.Esther]),
+	Job: new Set([...full.Job, ...ob.Job]),
+	Psalms: new Set([...full.Psalms, ...ob.Psalms]),
+	Proverbs: new Set([...full.Proverbs, ...ob.Proverbs]),
+	Ecclesiastes: new Set([...full.Ecclesiastes, ...ob.Ecclesiastes]),
+	// Song_of_Solomon -> Song of Solomon | Canticle of Canticles
+	Songs_Of_Solomon: new Set([...full.Songs_Of_Solomon, ...ob.Songs_Of_Solomon]), // Through abbreviations
+	Isaiah: new Set([...full.Isaiah, ...ob.Isaiah]),
+	Jeremiah: new Set([...full.Jeremiah, ...ob.Jeremiah]),
+	Lamentations: new Set([...full.Lamentations, ...ob.Lamentations]),
+	Ezekiel: new Set([...ob.Ezekiel, ...ob.Ezekiel]),
+	Daniel: new Set([...ob.Daniel, ...full.Daniel]),
+	Hosea: new Set([...ob.Hosea, ...full.Hosea]),
+	Joel: new Set([...ob.Joel, ...full.Joel]),
+	Amos: new Set([...ob.Amos, ...full.Amos]),
+	Obadiah: new Set([...ob.Obadiah, ...full.Obadiah]),
+	Jonah: new Set([...ob.Jonah, ...full.Jonah]),
+	Micah: new Set([...ob.Micah, ...full.Micah]),
+	Nahum: new Set([...ob.Nahum, ...full.Nahum]),
+	Habakkuk: new Set([...ob.Habakkuk, ...full.Habakkuk]),
+	Zephaniah: new Set([...ob.Zephaniah, ...full.Zephaniah]),
+	Haggai: new Set([...ob.Haggai, ...full.Haggai]),
+	Zechariah: new Set([...ob.Zechariah, ...full.Zechariah]),
+	Malachi: new Set([...ob.Malachi, ...full.Malachi]),
+	Matthew: new Set([...ob.Matthew, ...full.Matthew]),
+	Mark: new Set([...ob.Mark, ...full.Mark]),
+	Luke: new Set([...ob.Luke, ...full.Luke]),
+	John: new Set([...ob.John, ...full.John]),
+	Acts: new Set([...ob.Acts, ...full.Acts]),
+	Romans: new Set([...ob.Romans, ...full.Romans]),
+	Corinthians: new Set([...ob.Corinthians, ...full.Corinthians]),
+	Galatians: new Set([...ob.Galatians, ...full.Galatians]),
+	Ephesians: new Set([...ob.Ephesians, ...full.Ephesians]),
+	Philippians: new Set([...ob.Philippians, ...full.Philippians]),
+	Colossians: new Set([...ob.Colossians, ...full.Colossians]),
+	Thessalonians: new Set([...ob.Thessalonians, ...full.Thessalonians]),
+	Timothy: new Set([...ob.Timothy, ...full.Timothy]),
+	Titus: new Set([...ob.Titus, ...full.Titus]),
+	Philemon: new Set([...ob.Philemon, ...full.Philemon]),
+	Hebrews: new Set([...ob.Hebrews, ...full.Hebrews]),
+	James: new Set([...ob.James, ...full.James]),
+	Peter: new Set([...ob.Peter, ...full.Peter]),
+	John_epistles: new Set([...ob.John_epistles, ...full.John_epistles]),
+	Jude: new Set([...ob.Jude, ...full.Jude]),
+	Revelation: new Set([...ob.Revelation, ...full.Revelation]),
+	Tobit: new Set([...ob.Tobit, ...full.Tobit]),
+	Judith: new Set([...ob.Judith, ...full.Judith]),
+	Esther_Greek: new Set([...ob.Esther_Greek, ...full.Esther_Greek]),
+	Wisdom_Of_Solomon: new Set([...ob.Wisdom_Of_Solomon, ...full.Wisdom_Of_Solomon]),
+	Sirach: new Set([...ob.Sirach, ...full.Sirach]),
+	Baruch: new Set([...ob.Baruch, ...full.Baruch]),
+	Letter_Of_Jeremiah: new Set([...ob.Letter_Of_Jeremiah, ...full.Letter_Of_Jeremiah]),
+	Song_Of_The_Three_Young_Men: new Set([
+		...full.Song_Of_The_Three_Young_Men,
+		...ob.Song_Of_The_Three_Young_Men,
+	]), // TODO: Song of the three young men | Other
+	Susanna: new Set([...ob.Susanna, ...full.Susanna]),
+	Bel_And_The_Dragon: new Set([...ob.Bel_And_The_Dragon, ...full.Bel_And_The_Dragon]),
+	Maccabees: new Set([...ob.Maccabees, ...full.Maccabees]),
+	Esdras: new Set([...ob.Esdras, ...full.Esdras]),
+	Prayer_Of_Manasseh: new Set([...ob.Prayer_Of_Manasseh, ...full.Prayer_Of_Manasseh]),
+	Psalm_151: new Set([...ob.Psalm_151, ...full.Psalm_151]),
+	Letter_To_The_Laodiceans: new Set([
+		...ob.Letter_To_The_Laodiceans,
+		...ob.Letter_To_The_Laodiceans,
+	]),
+	Prayer_Of_Azariah: new Set([...ob.Prayer_Of_Azariah, ...full.Prayer_Of_Azariah]),
+	Psalms_152_To_155: new Set([...ob.Psalms_152_To_155, ...full.Psalms_152_To_155]),
+	Odes: new Set([...ob.Odes, ...full.Odes]),
+	Psalms_Of_Solomon: new Set([...ob.Psalms_Of_Solomon, ...full.Psalms_Of_Solomon]),
+	Letter_Of_Baruch: new Set([...ob.Letter_Of_Baruch, ...full.Letter_Of_Baruch]),
+	Jubilees: new Set([...ob.Jubilees, ...full.Jubilees]),
+	Enoch: new Set([...ob.Enoch, ...full.Enoch]),
+	Reproof: new Set([...ob.Reproof, ...full.Reproof]), // Proverbs part 2: Used in the Ethiopian Bible
+	Baruch_epistles: new Set([...ob.Baruch_epistles, ...full.Baruch_epistles]),
+	Meqabyan: new Set([...ob.Meqabyan, ...full.Meqabyan]),
+};
