@@ -2,15 +2,15 @@ import type { LanguageOptions } from '../../internal/lang-type';
 
 export const standard_style: LanguageOptions = {
 	allowed_ordinal_words: {
-		first: ['First', 'first', 'I'],
-		second: ['Second', 'second', 'II'],
+		first: ['First', 'first'],
+		second: ['Second', 'second'],
 		third: ['Third', 'third'],
 		fourth: ['Fourth', 'fourth'],
 		fifth: ['Fifth', 'fifth'],
 	},
 	allowed_ordinal_abbrs: {
-		first: ['st', '.'],
-		second: ['nd', '.'],
+		first: ['st', '.', 'I'],
+		second: ['nd', '.', 'II'],
 		third: ['rd', '.'],
 		fourth: ['th', '.'],
 		fifth: ['th', '.'],

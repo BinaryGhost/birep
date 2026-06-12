@@ -313,6 +313,9 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 			solomon: {
 				book: possible_books.Songs_of_Solomon,
 			},
+			'sg./sol.': {
+				book: possible_books.Songs_of_Solomon,
+			},
 		},
 		'three/thr.': {
 			book: possible_books.Song_Of_The_Three_Young_Men,
@@ -348,6 +351,9 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 				dragon: {
 					book: possible_books.Bel_And_The_Dragon,
 				},
+			},
+			'dr.': {
+				book: possible_books.Bel_And_The_Dragon,
 			},
 		},
 	},
@@ -392,6 +398,13 @@ export const Standard_WordedBookTrie: WordedBookNode = {
 	prayer: {
 		of: {
 			manasseh: {
+				book: possible_books.Prayer_Of_Manasseh,
+			},
+		},
+	},
+	'pr.': {
+		of: {
+			'man.': {
 				book: possible_books.Prayer_Of_Manasseh,
 			},
 		},

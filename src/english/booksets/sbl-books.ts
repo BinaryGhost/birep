@@ -78,9 +78,9 @@ export const books: Bookset = {
 
 	Letter_Of_Jeremiah: ['LJe.'],
 	Song_Of_The_Three_Young_Men: [],
-	Susanna: ['Susanna', 'Sus.'],
+	Susanna: ['Susanna'],
 	Bel_And_The_Dragon: [],
-	Maccabees: ['Maccabees', 'Mac.'],
+	Maccabees: ['Maccabees'],
 	Esdras: [],
 	Prayer_Of_Manasseh: [],
 	Psalm_151: [],

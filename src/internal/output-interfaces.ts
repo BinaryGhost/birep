@@ -1,4 +1,4 @@
-import type { t_chapter, t_reference } from './books/book-type';
+import type { t_reference } from './books/book-type';
 
 export interface StandardForm {
 	bookname_local_language: string;

@@ -4,6 +4,7 @@ import {
 	possible_ordinal_books,
 	possible_books,
 	type t_reference,
+	type IndexBookset,
 } from './book-type';
 import { protestant } from './canon';
 
@@ -801,4 +802,217 @@ export function reconstructReferenceForTesting(ref: t_reference[]): string {
 		all_ref += `${bookname} ${chapter}:${verse} `;
 	}
 	return all_ref.trim();
+}
+
+export function reprToBookType(
+	repr: string,
+	ref_bookset: IndexBookset,
+	ordinality?: number,
+): t_book | t_ordinal_book | undefined {
+	if (ordinality !== undefined) {
+		if (ref_bookset.John_epistles.has(repr)) {
+			return {
+				book: possible_ordinal_books.John,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Peter.has(repr)) {
+			return {
+				book: possible_ordinal_books.Peter,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Timothy.has(repr)) {
+			return {
+				book: possible_ordinal_books.Timothy,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Thessalonians.has(repr)) {
+			return {
+				book: possible_ordinal_books.Thessalonians,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Corinthians.has(repr)) {
+			return {
+				book: possible_ordinal_books.Corinthians,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Chronicles.has(repr)) {
+			return {
+				book: possible_ordinal_books.Chronicles,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Samuel.has(repr)) {
+			return {
+				book: possible_ordinal_books.Samuel,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Moses_ord.has(repr)) {
+			return {
+				book: possible_ordinal_books.Moses,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Maccabees.has(repr)) {
+			return {
+				book: possible_ordinal_books.Maccabees,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Esdras.has(repr)) {
+			return {
+				book: possible_ordinal_books.Esdras,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Baruch_epistles.has(repr)) {
+			return {
+				book: possible_ordinal_books.Baruch,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Meqabyan.has(repr)) {
+			return {
+				book: possible_ordinal_books.Meqabyan,
+				ordinal: ordinality,
+			};
+		} else if (ref_bookset.Moses_ord) {
+			return {
+				book: possible_ordinal_books.Moses,
+				ordinal: ordinality,
+			};
+		} else {
+			return undefined;
+		}
+	} else {
+		if (ref_bookset.Acts.has(repr)) {
+			return { book: possible_books.Acts };
+		} else if (ref_bookset.Amos.has(repr)) {
+			return { book: possible_books.Amos };
+		} else if (ref_bookset.Colossians.has(repr)) {
+			return { book: possible_books.Colossians };
+		} else if (ref_bookset.Daniel.has(repr)) {
+			return { book: possible_books.Daniel };
+		} else if (ref_bookset.Deuteronomy.has(repr)) {
+			return { book: possible_books.Deuteronomy };
+		} else if (ref_bookset.Ecclesiastes.has(repr)) {
+			return { book: possible_books.Ecclesiastes };
+		} else if (ref_bookset.Ephesians.has(repr)) {
+			return { book: possible_books.Ephesians };
+		} else if (ref_bookset.Esther.has(repr)) {
+			return { book: possible_books.Esther };
+		} else if (ref_bookset.Exodus.has(repr)) {
+			return { book: possible_books.Exodus };
+		} else if (ref_bookset.Ezra.has(repr)) {
+			return { book: possible_books.Ezra };
+		} else if (ref_bookset.Ezekiel.has(repr)) {
+			return { book: possible_books.Ezekiel };
+		} else if (ref_bookset.Galatians.has(repr)) {
+			return { book: possible_books.Galatians };
+		} else if (ref_bookset.Genesis.has(repr)) {
+			return { book: possible_books.Genesis };
+		} else if (ref_bookset.Habakkuk.has(repr)) {
+			return { book: possible_books.Habakkuk };
+		} else if (ref_bookset.Haggai.has(repr)) {
+			return { book: possible_books.Haggai };
+		} else if (ref_bookset.Hebrews.has(repr)) {
+			return { book: possible_books.Hebrews };
+		} else if (ref_bookset.Hosea.has(repr)) {
+			return { book: possible_books.Hosea };
+		} else if (ref_bookset.Isaiah.has(repr)) {
+			return { book: possible_books.Isaiah };
+		} else if (ref_bookset.James.has(repr)) {
+			return { book: possible_books.James };
+		} else if (ref_bookset.Jeremiah.has(repr)) {
+			return { book: possible_books.Jeremiah };
+		} else if (ref_bookset.Job.has(repr)) {
+			return { book: possible_books.Job };
+		} else if (ref_bookset.Joel.has(repr)) {
+			return { book: possible_books.Joel };
+		} else if (ref_bookset.John.has(repr)) {
+			return { book: possible_books.John };
+		} else if (ref_bookset.Josua.has(repr)) {
+			return { book: possible_books.Josua };
+		} else if (ref_bookset.Jude.has(repr)) {
+			return { book: possible_books.Jude };
+		} else if (ref_bookset.Judges.has(repr)) {
+			return { book: possible_books.Judges };
+		} else if (ref_bookset.Lamentations.has(repr)) {
+			return { book: possible_books.Lamentations };
+		} else if (ref_bookset.Luke.has(repr)) {
+			return { book: possible_books.Luke };
+		} else if (ref_bookset.Leviticus.has(repr)) {
+			return { book: possible_books.Leviticus };
+		} else if (ref_bookset.Malachi.has(repr)) {
+			return { book: possible_books.Malachi };
+		} else if (ref_bookset.Mark.has(repr)) {
+			return { book: possible_books.Mark };
+		} else if (ref_bookset.Matthew.has(repr)) {
+			return { book: possible_books.Matthew };
+		} else if (ref_bookset.Micah.has(repr)) {
+			return { book: possible_books.Micah };
+		} else if (ref_bookset.Nahum.has(repr)) {
+			return { book: possible_books.Nahum };
+		} else if (ref_bookset.Nehemia.has(repr)) {
+			return { book: possible_books.Nehemia };
+		} else if (ref_bookset.Numbers.has(repr)) {
+			return { book: possible_books.Numbers };
+		} else if (ref_bookset.Obadiah.has(repr)) {
+			return { book: possible_books.Obadiah };
+		} else if (ref_bookset.Philemon.has(repr)) {
+			return { book: possible_books.Philemon };
+		} else if (ref_bookset.Philippians.has(repr)) {
+			return { book: possible_books.Philippians };
+		} else if (ref_bookset.Proverbs.has(repr)) {
+			return { book: possible_books.Proverbs };
+		} else if (ref_bookset.Psalms.has(repr)) {
+			return { book: possible_books.Psalms };
+		} else if (ref_bookset.Revelation.has(repr)) {
+			return { book: possible_books.Revelation };
+		} else if (ref_bookset.Romans.has(repr)) {
+			return { book: possible_books.Romans };
+		} else if (ref_bookset.Ruth.has(repr)) {
+			return { book: possible_books.Ruth };
+		} else if (ref_bookset.Titus.has(repr)) {
+			return { book: possible_books.Titus };
+		} else if (ref_bookset.Zechariah.has(repr)) {
+			return { book: possible_books.Zechariah };
+		} else if (ref_bookset.Zephaniah.has(repr)) {
+			return { book: possible_books.Zephaniah };
+		} else if (ref_bookset.Songs_Of_Solomon.has(repr)) {
+			return { book: possible_books.Songs_of_Solomon };
+		} else if (ref_bookset.Tobit.has(repr)) {
+			return { book: possible_books.Tobit };
+		} else if (ref_bookset.Judith.has(repr)) {
+			return { book: possible_books.Judith };
+		} else if (ref_bookset.Esther_Greek.has(repr)) {
+			return { book: possible_books.Esther_Greek };
+		} else if (ref_bookset.Wisdom_Of_Solomon.has(repr)) {
+			return { book: possible_books.Wisdom_Of_Solomon };
+		} else if (ref_bookset.Sirach.has(repr)) {
+			return { book: possible_books.Sirach };
+		} else if (ref_bookset.Baruch.has(repr)) {
+			return { book: possible_books.Baruch };
+		} else if (ref_bookset.Letter_Of_Jeremiah.has(repr)) {
+			return { book: possible_books.Letter_Of_Jeremiah };
+		} else if (ref_bookset.Song_Of_The_Three_Young_Men.has(repr)) {
+			return { book: possible_books.Song_Of_The_Three_Young_Men };
+		} else if (ref_bookset.Susanna.has(repr)) {
+			return { book: possible_books.Susanna };
+		} else if (ref_bookset.Bel_And_The_Dragon.has(repr)) {
+			return { book: possible_books.Bel_And_The_Dragon };
+		} else if (ref_bookset.Prayer_Of_Azariah.has(repr)) {
+			return { book: possible_books.Prayer_Of_Azariah };
+		} else if (ref_bookset.Prayer_Of_Manasseh.has(repr)) {
+			return { book: possible_books.Prayer_Of_Manasseh };
+		} else if (ref_bookset.Psalm_151.has(repr)) {
+			return { book: possible_books.Psalm_151 };
+		} else if (ref_bookset.Psalms_152_To_155.has(repr)) {
+			return { book: possible_books.Psalms_152_To_155 };
+		} else if (ref_bookset.Odes.has(repr)) {
+			return { book: possible_books.Odes };
+		} else if (ref_bookset.Psalms_Of_Solomon.has(repr)) {
+			return { book: possible_books.Psalms_Of_Solomon };
+		} else if (ref_bookset.Letter_Of_Baruch.has(repr)) {
+			return { book: possible_books.Letter_Of_Baruch };
+		} else if (ref_bookset.Letter_To_The_Laodiceans.has(repr)) {
+			return { book: possible_books.Letter_To_The_Laodiceans };
+		} else {
+			return undefined;
+		}
+	}
 }

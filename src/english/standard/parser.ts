@@ -4,7 +4,6 @@ import type { Token } from '../../internal/lexing';
 import { standard_style } from './lang';
 import { index_books } from './book-index';
 import {
-	possible_books,
 	possible_ordinal_books,
 	type t_book,
 	type t_chapter,
@@ -18,26 +17,27 @@ import {
 	giveBookName,
 	isCorrectChapterOfBook,
 	isValidOrdinalBook,
+	reprToBookType,
 } from '../../internal/books/book-analysis';
 import { Standard_WordedBookTrie } from './worded-books';
 import { printIt } from '../../internal/lang-type';
 
 export class StandardEnglishParser extends Parser {
-	override gathered_ordinal_words: Set<string> = new Set<string>(
+	override gathered_ordinal_words: Set<string> = new Set<string>([
 		...standard_style.allowed_ordinal_words.first,
 		...standard_style.allowed_ordinal_words.second,
 		...standard_style.allowed_ordinal_words.third,
 		...standard_style.allowed_ordinal_words.fourth,
 		...standard_style.allowed_ordinal_words.fifth,
-	);
+	]);
 
-	override gathered_ordinal_abbrs: Set<string> = new Set<string>(
+	override gathered_ordinal_abbrs: Set<string> = new Set<string>([
 		...standard_style.allowed_ordinal_abbrs.first,
 		...standard_style.allowed_ordinal_abbrs.second,
 		...standard_style.allowed_ordinal_abbrs.third,
 		...standard_style.allowed_ordinal_abbrs.fourth,
 		...standard_style.allowed_ordinal_abbrs.fifth,
-	);
+	]);
 
 	override parse(): Success<t_reference[] | null> {
 		let references: t_reference[] = [];
@@ -308,6 +308,7 @@ export class StandardEnglishParser extends Parser {
 				},
 			};
 		}
+		const curr_repr = current.representation;
 
 		const next = this.peek();
 		if (next === undefined) {
@@ -319,38 +320,38 @@ export class StandardEnglishParser extends Parser {
 				},
 			};
 		}
+		const next_repr = next.representation;
 
-		// First | Second ...
-		if (standard_style.allowed_ordinal_words.first.includes(current.representation)) {
-			this.consume();
-			return { t: 1, e: null };
-		} else if (standard_style.allowed_ordinal_words.second.includes(current.representation)) {
-			this.consume();
-			return { t: 2, e: null };
-		} else if (standard_style.allowed_ordinal_words.third.includes(current.representation)) {
-			this.consume();
-			return { t: 3, e: null };
-		} else if (standard_style.allowed_ordinal_words.fourth.includes(current.representation)) {
-			this.consume();
-			return { t: 4, e: null };
-		} else if (standard_style.allowed_ordinal_words.fifth.includes(current.representation)) {
-			this.consume();
-			return { t: 5, e: null };
-		} else if (
-			this.gathered_ordinal_words.has(current.representation) &&
-			this.gathered_ordinal_abbrs.has(next.representation)
-		) {
-			// case -> First . | Second nd
+		// case -> First . | Second nd
+		if (this.gathered_ordinal_words.has(curr_repr) && this.gathered_ordinal_abbrs.has(next_repr)) {
 			return {
 				t: null,
 				e: {
 					heading: 'Invalid Ordinal Declaration',
 					possible_fixes: [
 						`An ordinal work should never precede an ordinal abbreviatoon`,
-						`"${current.representation}" can not be with "${next.representation}"`,
+						`"${curr_repr}" can not be with "${next_repr}"`,
 					],
 				},
 			};
+		}
+
+		// First | Second ...
+		if (standard_style.allowed_ordinal_words.first.includes(curr_repr)) {
+			this.consume();
+			return { t: 1, e: null };
+		} else if (standard_style.allowed_ordinal_words.second.includes(curr_repr)) {
+			this.consume();
+			return { t: 2, e: null };
+		} else if (standard_style.allowed_ordinal_words.third.includes(curr_repr)) {
+			this.consume();
+			return { t: 3, e: null };
+		} else if (standard_style.allowed_ordinal_words.fourth.includes(curr_repr)) {
+			this.consume();
+			return { t: 4, e: null };
+		} else if (standard_style.allowed_ordinal_words.fifth.includes(curr_repr)) {
+			this.consume();
+			return { t: 5, e: null };
 		}
 
 		// if (next.kind !== 'num') {
@@ -363,75 +364,68 @@ export class StandardEnglishParser extends Parser {
 		// 	};
 		// }
 
-		let num_value = parseInt(current.representation);
+		let num_value = parseInt(curr_repr);
 		if (isNaN(num_value)) {
 			return {
 				t: null,
 				e: {
 					heading: 'Invalid Ordinal Number',
-					possible_fixes: [`"${current.representation}" is not a number`],
+					possible_fixes: [`"${curr_repr}" is not a number`],
 				},
 			};
 		}
 
 		// 1st | 2nd
-		if (
-			num_value === 1 &&
-			standard_style.allowed_ordinal_abbrs.first.includes(next.representation)
-		) {
+		if (num_value === 1 && standard_style.allowed_ordinal_abbrs.first.includes(next_repr)) {
 			this.consume();
 			this.consume();
 			return {
 				t: 1,
 				e: null,
 			};
-		} else if (
-			num_value === 2 &&
-			standard_style.allowed_ordinal_abbrs.second.includes(next.representation)
-		) {
+		} else if (num_value === 2 && standard_style.allowed_ordinal_abbrs.second.includes(next_repr)) {
 			this.consume();
 			this.consume();
 			return {
 				t: 2,
 				e: null,
 			};
-		} else if (
-			num_value === 3 &&
-			standard_style.allowed_ordinal_abbrs.third.includes(next.representation)
-		) {
+		} else if (num_value === 3 && standard_style.allowed_ordinal_abbrs.third.includes(next_repr)) {
 			this.consume();
 			this.consume();
 			return {
 				t: 3,
 				e: null,
 			};
-		} else if (
-			num_value === 4 &&
-			standard_style.allowed_ordinal_abbrs.fourth.includes(next.representation)
-		) {
+		} else if (num_value === 4 && standard_style.allowed_ordinal_abbrs.fourth.includes(next_repr)) {
 			this.consume();
 			this.consume();
 			return {
 				t: 4,
 				e: null,
 			};
-		} else if (
-			num_value === 5 &&
-			standard_style.allowed_ordinal_abbrs.fifth.includes(next.representation)
-		) {
+		} else if (num_value === 5 && standard_style.allowed_ordinal_abbrs.fifth.includes(next_repr)) {
 			this.consume();
 			this.consume();
 			return {
 				t: 5,
 				e: null,
 			};
-		} else {
+		} else if (!this.gathered_ordinal_abbrs.has(next_repr)) {
 			// NOTE: This isnt wrong here, since the english ordinals can also
 			//       be like "2 Peter"
 			this.consume();
 			return {
 				t: num_value,
 				e: null,
+			};
+		} else {
+			return {
+				t: null,
+				e: {
+					heading: 'Invalid Ordinal Declaration',
+					possible_fixes: ['Check if you have got something like "1nd" or "2rd" or something else'],
+				},
 			};
 		}
 	}
@@ -458,53 +452,8 @@ export class StandardEnglishParser extends Parser {
 			};
 		}
 
-		// TODO: Apocrypha currently unimplemented
-
-		let representation: t_ordinal_book | undefined;
-		if (index_books.John_epistles.has(current.representation)) {
-			representation = {
-				book: possible_ordinal_books.John,
-				ordinal: ordinalness,
-			};
-		} else if (index_books.Peter.has(current.representation)) {
-			representation = {
-				book: possible_ordinal_books.Peter,
-				ordinal: ordinalness,
-			};
-		} else if (index_books.Timothy.has(current.representation)) {
-			representation = {
-				book: possible_ordinal_books.Timothy,
-				ordinal: ordinalness,
-			};
-		} else if (index_books.Thessalonians.has(current.representation)) {
-			representation = {
-				book: possible_ordinal_books.Thessalonians,
-				ordinal: ordinalness,
-			};
-		} else if (index_books.Corinthians.has(current.representation)) {
-			representation = {
-				book: possible_ordinal_books.Corinthians,
-				ordinal: ordinalness,
-			};
-		} else if (index_books.Chronicles.has(current.representation)) {
-			representation = {
-				book: possible_ordinal_books.Chronicles,
-				ordinal: ordinalness,
-			};
-		} else if (index_books.Samuel.has(current.representation)) {
-			representation = {
-				book: possible_ordinal_books.Samuel,
-				ordinal: ordinalness,
-			};
-		} else if (index_books.Moses_ord.has(current.representation)) {
-			representation = {
-				book: possible_ordinal_books.Moses,
-				ordinal: ordinalness,
-			};
-		} else {
-			// Missmatch -> 5. Corinthians or Fourth Luke
-			// Or unimplemented (apocryphal) books
-			// Or 1 nd
+		const book = reprToBookType(current.representation, index_books, ordinalness);
+		if (book === undefined) {
 			return {
 				t: null,
 				e: {
@@ -517,12 +466,67 @@ export class StandardEnglishParser extends Parser {
 			};
 		}
 
-		if (representation === undefined) {
-			return {
-				t: null,
-				e: { heading: 'Invalid Ordinal Book', possible_fixes: ['Could not form a bookname'] },
-			};
-		} else if (!isValidOrdinalBook(representation)) {
+		// let representation: t_ordinal_book | undefined;
+		// if (index_books.John_epistles.has(current.representation)) {
+		// 	representation = {
+		// 		book: possible_ordinal_books.John,
+		// 		ordinal: ordinalness,
+		// 	};
+		// } else if (index_books.Peter.has(current.representation)) {
+		// 	representation = {
+		// 		book: possible_ordinal_books.Peter,
+		// 		ordinal: ordinalness,
+		// 	};
+		// } else if (index_books.Timothy.has(current.representation)) {
+		// 	representation = {
+		// 		book: possible_ordinal_books.Timothy,
+		// 		ordinal: ordinalness,
+		// 	};
+		// } else if (index_books.Thessalonians.has(current.representation)) {
+		// 	representation = {
+		// 		book: possible_ordinal_books.Thessalonians,
+		// 		ordinal: ordinalness,
+		// 	};
+		// } else if (index_books.Corinthians.has(current.representation)) {
+		// 	representation = {
+		// 		book: possible_ordinal_books.Corinthians,
+		// 		ordinal: ordinalness,
+		// 	};
+		// } else if (index_books.Chronicles.has(current.representation)) {
+		// 	representation = {
+		// 		book: possible_ordinal_books.Chronicles,
+		// 		ordinal: ordinalness,
+		// 	};
+		// } else if (index_books.Samuel.has(current.representation)) {
+		// 	representation = {
+		// 		book: possible_ordinal_books.Samuel,
+		// 		ordinal: ordinalness,
+		// 	};
+		// } else if (index_books.Moses_ord.has(current.representation)) {
+		// 	representation = {
+		// 		book: possible_ordinal_books.Moses,
+		// 		ordinal: ordinalness,
+		// 	};
+		// } else {
+		// 	return {
+		// 		t: null,
+		// 		e: {
+		// 			heading: 'Invalid Ordinal Book',
+		// 			possible_fixes: [
+		// 				`Found a missmatch for an ordinal with the given bookname`,
+		// 				'Double Check your booknames for something like "5. Corinthians" or "2nd Luke"',
+		// 			],
+		// 		},
+		// 	};
+		// }
+
+		// if (representation === undefined) {
+		// 	return {
+		// 		t: null,
+		// 		e: { heading: 'Invalid Ordinal Book', possible_fixes: ['Could not form a bookname'] },
+		// 	};
+		// } else
+		if (!isValidOrdinalBook(book as t_ordinal_book)) {
 			return {
 				t: null,
 				e: {
@@ -534,7 +538,7 @@ export class StandardEnglishParser extends Parser {
 				},
 			};
 		} else {
-			return { t: representation, e: null };
+			return { t: book as t_ordinal_book, e: null };
 		}
 	}
 
@@ -689,105 +693,8 @@ export class StandardEnglishParser extends Parser {
 			return { t: null, e: { heading: 'kubba', possible_fixes: [] } };
 		}
 
-		// TODO: Apocrypha currently unimplemented
-
-		if (index_books.Acts.has(current.representation)) {
-			return { t: { book: possible_books.Acts }, e: null };
-		} else if (index_books.Amos.has(current.representation)) {
-			return { t: { book: possible_books.Amos }, e: null };
-		} else if (index_books.Colossians.has(current.representation)) {
-			return { t: { book: possible_books.Colossians }, e: null };
-		} else if (index_books.Daniel.has(current.representation)) {
-			return { t: { book: possible_books.Daniel }, e: null };
-		} else if (index_books.Deuteronomy.has(current.representation)) {
-			return { t: { book: possible_books.Deuteronomy }, e: null };
-		} else if (index_books.Ecclesiastes.has(current.representation)) {
-			return { t: { book: possible_books.Ecclesiastes }, e: null };
-		} else if (index_books.Ephesians.has(current.representation)) {
-			return { t: { book: possible_books.Ephesians }, e: null };
-		} else if (index_books.Esther.has(current.representation)) {
-			return { t: { book: possible_books.Esther }, e: null };
-		} else if (index_books.Exodus.has(current.representation)) {
-			return { t: { book: possible_books.Exodus }, e: null };
-		} else if (index_books.Ezra.has(current.representation)) {
-			return { t: { book: possible_books.Ezra }, e: null };
-		} else if (index_books.Ezekiel.has(current.representation)) {
-			return { t: { book: possible_books.Ezekiel }, e: null };
-		} else if (index_books.Galatians.has(current.representation)) {
-			return { t: { book: possible_books.Galatians }, e: null };
-		} else if (index_books.Genesis.has(current.representation)) {
-			return { t: { book: possible_books.Genesis }, e: null };
-		} else if (index_books.Habakkuk.has(current.representation)) {
-			return { t: { book: possible_books.Habakkuk }, e: null };
-		} else if (index_books.Haggai.has(current.representation)) {
-			return { t: { book: possible_books.Haggai }, e: null };
-		} else if (index_books.Hebrews.has(current.representation)) {
-			return { t: { book: possible_books.Hebrews }, e: null };
-		} else if (index_books.Hosea.has(current.representation)) {
-			return { t: { book: possible_books.Hosea }, e: null };
-		} else if (index_books.Isaiah.has(current.representation)) {
-			return { t: { book: possible_books.Isaiah }, e: null };
-		} else if (index_books.James.has(current.representation)) {
-			return { t: { book: possible_books.James }, e: null };
-		} else if (index_books.Jeremiah.has(current.representation)) {
-			return { t: { book: possible_books.Jeremiah }, e: null };
-		} else if (index_books.Job.has(current.representation)) {
-			return { t: { book: possible_books.Job }, e: null };
-		} else if (index_books.Joel.has(current.representation)) {
-			return { t: { book: possible_books.Joel }, e: null };
-		} else if (index_books.John.has(current.representation)) {
-			return { t: { book: possible_books.John }, e: null };
-		} else if (index_books.Josua.has(current.representation)) {
-			return { t: { book: possible_books.Josua }, e: null };
-		} else if (index_books.Jude.has(current.representation)) {
-			return { t: { book: possible_books.Jude }, e: null };
-		} else if (index_books.Judges.has(current.representation)) {
-			return { t: { book: possible_books.Judges }, e: null };
-		} else if (index_books.Lamentations.has(current.representation)) {
-			return { t: { book: possible_books.Lamentations }, e: null };
-		} else if (index_books.Luke.has(current.representation)) {
-			return { t: { book: possible_books.Luke }, e: null };
-		} else if (index_books.Leviticus.has(current.representation)) {
-			return { t: { book: possible_books.Leviticus }, e: null };
-		} else if (index_books.Malachi.has(current.representation)) {
-			return { t: { book: possible_books.Malachi }, e: null };
-		} else if (index_books.Mark.has(current.representation)) {
-			return { t: { book: possible_books.Mark }, e: null };
-		} else if (index_books.Matthew.has(current.representation)) {
-			return { t: { book: possible_books.Matthew }, e: null };
-		} else if (index_books.Micah.has(current.representation)) {
-			return { t: { book: possible_books.Micah }, e: null };
-		} else if (index_books.Nahum.has(current.representation)) {
-			return { t: { book: possible_books.Nahum }, e: null };
-		} else if (index_books.Nehemia.has(current.representation)) {
-			return { t: { book: possible_books.Nehemia }, e: null };
-		} else if (index_books.Numbers.has(current.representation)) {
-			return { t: { book: possible_books.Numbers }, e: null };
-		} else if (index_books.Obadiah.has(current.representation)) {
-			return { t: { book: possible_books.Obadiah }, e: null };
-		} else if (index_books.Philemon.has(current.representation)) {
-			return { t: { book: possible_books.Philemon }, e: null };
-		} else if (index_books.Philippians.has(current.representation)) {
-			return { t: { book: possible_books.Philippians }, e: null };
-		} else if (index_books.Proverbs.has(current.representation)) {
-			return { t: { book: possible_books.Proverbs }, e: null };
-		} else if (index_books.Psalms.has(current.representation)) {
-			return { t: { book: possible_books.Psalms }, e: null };
-		} else if (index_books.Revelation.has(current.representation)) {
-			return { t: { book: possible_books.Revelation }, e: null };
-		} else if (index_books.Romans.has(current.representation)) {
-			return { t: { book: possible_books.Romans }, e: null };
-		} else if (index_books.Ruth.has(current.representation)) {
-			return { t: { book: possible_books.Ruth }, e: null };
-		} else if (index_books.Titus.has(current.representation)) {
-			return { t: { book: possible_books.Titus }, e: null };
-		} else if (index_books.Zechariah.has(current.representation)) {
-			return { t: { book: possible_books.Zechariah }, e: null };
-		} else if (index_books.Zephaniah.has(current.representation)) {
-			return { t: { book: possible_books.Zephaniah }, e: null };
-		} else if (index_books.Songs_Of_Solomon.has(current?.representation)) {
-			return { t: { book: possible_books.Songs_of_Solomon }, e: null };
-		} else {
+		const book = reprToBookType(current.representation, index_books);
+		if (book === undefined) {
 			return {
 				t: null,
 				e: {
@@ -796,6 +703,8 @@ export class StandardEnglishParser extends Parser {
 				},
 			};
 		}
+
+		return { t: book as t_book, e: null };
 	}
 
 	// TODO: Do your features here in the future

@@ -80,7 +80,7 @@ export const index_books: IndexBookset = {
 	Prayer_Of_Manasseh: new Set([...ob.Prayer_Of_Manasseh, ...full.Prayer_Of_Manasseh]),
 	Psalm_151: new Set([...ob.Psalm_151, ...full.Psalm_151]),
 	Letter_To_The_Laodiceans: new Set([
-		...ob.Letter_To_The_Laodiceans,
+		...full.Letter_To_The_Laodiceans,
 		...ob.Letter_To_The_Laodiceans,
 	]),
 	Prayer_Of_Azariah: new Set([...ob.Prayer_Of_Azariah, ...full.Prayer_Of_Azariah]),
