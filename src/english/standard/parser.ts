@@ -4,7 +4,6 @@ import type { Token } from '../../internal/lexing';
 import { standard_style } from './lang';
 import { index_books } from './book-index';
 import {
-	possible_ordinal_books,
 	type t_book,
 	type t_chapter,
 	type t_chapter_verse,
@@ -21,9 +20,10 @@ import {
 } from '../../internal/books/book-analysis';
 import { Standard_WordedBookTrie } from './worded-books';
 import { printIt } from '../../internal/lang-type';
+import { StandardEnglishLexer } from './lexer';
 
 export class StandardEnglishParser extends Parser {
-	override gathered_ordinal_words: Set<string> = new Set<string>([
+	protected override gathered_ordinal_words: Set<string> = new Set<string>([
 		...standard_style.allowed_ordinal_words.first,
 		...standard_style.allowed_ordinal_words.second,
 		...standard_style.allowed_ordinal_words.third,
@@ -31,7 +31,7 @@ export class StandardEnglishParser extends Parser {
 		...standard_style.allowed_ordinal_words.fifth,
 	]);
 
-	override gathered_ordinal_abbrs: Set<string> = new Set<string>([
+	protected override gathered_ordinal_abbrs: Set<string> = new Set<string>([
 		...standard_style.allowed_ordinal_abbrs.first,
 		...standard_style.allowed_ordinal_abbrs.second,
 		...standard_style.allowed_ordinal_abbrs.third,
@@ -39,8 +39,28 @@ export class StandardEnglishParser extends Parser {
 		...standard_style.allowed_ordinal_abbrs.fifth,
 	]);
 
-	override parse(): Success<t_reference[] | null> {
+	protected override ref_trie: WordedBookNode | undefined = Standard_WordedBookTrie;
+
+	constructor() {
+		super();
+		this.lexer = new StandardEnglishLexer(standard_style);
+	}
+
+	public override parse(input: string): Success<t_reference[] | null> {
 		let references: t_reference[] = [];
+		const tokens = this.lexer?.lex(input);
+		if (tokens === undefined) {
+			return {
+				t: null,
+				e: {
+					heading: 'Lexing Error',
+					possible_fixes: ['Somehow the input string could not be parsed'],
+				},
+			};
+		}
+		this.source_tokens = tokens;
+		// Ensure parsing always starts at the first token
+		this.index = 0;
 
 		while (this.index < this.source_tokens.length) {
 			const current = this.current();
@@ -107,7 +127,7 @@ export class StandardEnglishParser extends Parser {
 			let book = this.parseOrdinalBook() as any;
 			// console.log('book: ', book);
 			if (book.t === null) {
-				book = this.parseWordedBookname(Standard_WordedBookTrie);
+				book = this.parseWordedBookname();
 				if (book.t === null) {
 					return { t: null, e: book.e };
 				}
@@ -135,7 +155,7 @@ export class StandardEnglishParser extends Parser {
 			let book = this.parseBook() as any;
 			// console.log('book: ', book);
 			if (book.t === null) {
-				book = this.parseWordedBookname(Standard_WordedBookTrie);
+				book = this.parseWordedBookname();
 				if (book.t === null) {
 					return { t: null, e: book.e };
 				}
@@ -466,66 +486,6 @@ export class StandardEnglishParser extends Parser {
 			};
 		}
 
-		// let representation: t_ordinal_book | undefined;
-		// if (index_books.John_epistles.has(current.representation)) {
-		// 	representation = {
-		// 		book: possible_ordinal_books.John,
-		// 		ordinal: ordinalness,
-		// 	};
-		// } else if (index_books.Peter.has(current.representation)) {
-		// 	representation = {
-		// 		book: possible_ordinal_books.Peter,
-		// 		ordinal: ordinalness,
-		// 	};
-		// } else if (index_books.Timothy.has(current.representation)) {
-		// 	representation = {
-		// 		book: possible_ordinal_books.Timothy,
-		// 		ordinal: ordinalness,
-		// 	};
-		// } else if (index_books.Thessalonians.has(current.representation)) {
-		// 	representation = {
-		// 		book: possible_ordinal_books.Thessalonians,
-		// 		ordinal: ordinalness,
-		// 	};
-		// } else if (index_books.Corinthians.has(current.representation)) {
-		// 	representation = {
-		// 		book: possible_ordinal_books.Corinthians,
-		// 		ordinal: ordinalness,
-		// 	};
-		// } else if (index_books.Chronicles.has(current.representation)) {
-		// 	representation = {
-		// 		book: possible_ordinal_books.Chronicles,
-		// 		ordinal: ordinalness,
-		// 	};
-		// } else if (index_books.Samuel.has(current.representation)) {
-		// 	representation = {
-		// 		book: possible_ordinal_books.Samuel,
-		// 		ordinal: ordinalness,
-		// 	};
-		// } else if (index_books.Moses_ord.has(current.representation)) {
-		// 	representation = {
-		// 		book: possible_ordinal_books.Moses,
-		// 		ordinal: ordinalness,
-		// 	};
-		// } else {
-		// 	return {
-		// 		t: null,
-		// 		e: {
-		// 			heading: 'Invalid Ordinal Book',
-		// 			possible_fixes: [
-		// 				`Found a missmatch for an ordinal with the given bookname`,
-		// 				'Double Check your booknames for something like "5. Corinthians" or "2nd Luke"',
-		// 			],
-		// 		},
-		// 	};
-		// }
-
-		// if (representation === undefined) {
-		// 	return {
-		// 		t: null,
-		// 		e: { heading: 'Invalid Ordinal Book', possible_fixes: ['Could not form a bookname'] },
-		// 	};
-		// } else
 		if (!isValidOrdinalBook(book as t_ordinal_book)) {
 			return {
 				t: null,
@@ -540,151 +500,6 @@ export class StandardEnglishParser extends Parser {
 		} else {
 			return { t: book as t_ordinal_book, e: null };
 		}
-	}
-
-	override parseWordedBookname(
-		ref_trie: WordedBookNode | undefined,
-	): Success<t_book | t_ordinal_book | null> {
-		if (!ref_trie) {
-			// No trie given
-			return {
-				t: null,
-				e: {
-					heading: 'No Trie given',
-					possible_fixes: [
-						'There seems to be a trie missing, ask the developer or create an issue',
-					],
-				},
-			};
-		}
-
-		let current_node: WordedBookNode | undefined = ref_trie;
-		let path: string[] = [];
-
-		while (this.index < this.source_tokens.length) {
-			const current_word = this.current()?.representation.toLowerCase();
-			path.push(current_word ?? '');
-
-			if (!current_word) break;
-
-			if (current_node[current_word]) {
-				const child = current_node[current_word] as WordedBookNode;
-				// If the child is a terminal (has a numeric `book` or `ordinal`), do not consume
-				// here — leave the token for the caller to consume for consistency.
-				if ((child['book'] && typeof child['book'] === 'number') || child['ordinal']) {
-					current_node = child;
-				} else {
-					current_node = child;
-					this.consume();
-				}
-			} else {
-				const all_keys = Object.keys(current_node).filter((key) => key.includes('/'));
-
-				let found_it: number | undefined = undefined;
-				for (let i = 0; i < all_keys.length; i++) {
-					const key = all_keys[i] as string;
-
-					const words = key?.split('/');
-
-					for (let j = 0; j < words?.length; j++) {
-						if (words[j]?.trim() === current_word) {
-							found_it = i;
-							break;
-						}
-					}
-
-					if (found_it !== undefined) break;
-				}
-
-				if (found_it !== undefined) {
-					const found_key = all_keys[found_it];
-					if (found_key === undefined) {
-						return {
-							t: null,
-							e: {
-								heading: 'Word not found',
-								possible_fixes: [
-									`"${current_word}" was not found, please look for valid booknames`,
-								],
-							},
-						};
-					}
-
-					const child = current_node[found_key] as WordedBookNode;
-					if ((child['book'] && typeof child['book'] === 'number') || child['ordinal']) {
-						current_node = child;
-					} else {
-						current_node = child;
-						this.consume();
-					}
-				} else if (current_node['_else']) {
-					current_node = current_node['_else'] as WordedBookNode;
-					this.consume();
-				} else {
-					return {
-						t: null,
-						e: {
-							heading: 'Word not found',
-							possible_fixes: [
-								`"${current_word}" could not be found, please look for valid booknames`,
-							],
-						},
-					};
-				}
-			}
-
-			if (
-				current_node['ordinal'] &&
-				current_node['book'] &&
-				typeof current_node['book'] === 'number'
-			) {
-				return {
-					t: {
-						book: (current_node as unknown as t_ordinal_book).book,
-						ordinal: (current_node as unknown as t_ordinal_book).ordinal,
-					},
-					e: null,
-				};
-			} else if (current_node['book'] && typeof current_node['book'] === 'number') {
-				return {
-					t: {
-						book: (current_node as unknown as t_book).book,
-					},
-					e: null,
-				};
-			}
-		}
-
-		// If the worded-book has ended without resolving it...
-		// Like: Wisdom | Wisdom of Solomon
-
-		if (current_node['_else']) {
-			const else_node = current_node['_else'] as WordedBookNode;
-			if (else_node['ordinal']) {
-				return {
-					t: {
-						book: (else_node as unknown as t_ordinal_book).book,
-						ordinal: (else_node as unknown as t_ordinal_book).ordinal,
-					},
-					e: null,
-				};
-			} else if (else_node['book']) {
-				return {
-					t: {
-						book: (else_node as unknown as t_book).book,
-					},
-					e: null,
-				};
-			}
-		}
-
-		return {
-			t: null,
-			e: {
-				heading: 'Invalid Bookname',
-				possible_fixes: [`Could not find anything with the term "${[...path].join(' ')}"`],
-			},
-		};
 	}
 
 	parseBook(): Success<t_book | null> {

@@ -1,13 +1,11 @@
 import { describe, test, expect } from 'bun:test';
 import { StandardEnglishParser } from '../parser';
-import { StandardEnglishLexer } from '../lexer';
-import { standard_style } from '../lang';
 
 describe('Verse parsing', () => {
-	const lexer = new StandardEnglishLexer(standard_style);
+	const parser = new StandardEnglishParser();
+
 	test('2,3;', () => {
-		const lexed = lexer.lex('2,3;');
-		const parser = new StandardEnglishParser(lexed);
+		parser.PutTokensManually('2,3;');
 
 		const result = parser.parseVerses();
 		expect(result.t).toEqual([
@@ -16,8 +14,7 @@ describe('Verse parsing', () => {
 		]);
 	});
 	test('"2,4,;" (is allowed)', () => {
-		const lexed = lexer.lex('2,4,;');
-		const parser = new StandardEnglishParser(lexed);
+		parser.PutTokensManually('2,4,;');
 
 		const result = parser.parseVerses();
 		expect(result.t).toEqual([
@@ -26,8 +23,7 @@ describe('Verse parsing', () => {
 		]);
 	});
 	test('5,7,3-4', () => {
-		const lexed = lexer.lex('5,7,3-4');
-		const parser = new StandardEnglishParser(lexed);
+		parser.PutTokensManually('5,7,3-4');
 
 		const result = parser.parseVerses();
 		expect(result.t).toEqual([
@@ -37,15 +33,13 @@ describe('Verse parsing', () => {
 		]);
 	});
 	test('5-4', () => {
-		const lexed = lexer.lex('5-4');
-		const parser = new StandardEnglishParser(lexed);
+		parser.PutTokensManually('5-4');
 
 		const result = parser.parseVerses();
 		expect(result.t).toBeNull();
 	});
 	test('5a-6', () => {
-		const lexed = lexer.lex('5a-6');
-		const parser = new StandardEnglishParser(lexed);
+		parser.PutTokensManually('5a-6');
 
 		const result = parser.parseVerses();
 		expect(result.t).toEqual([
@@ -53,8 +47,7 @@ describe('Verse parsing', () => {
 		]);
 	});
 	test('5-6a', () => {
-		const lexed = lexer.lex('5-6a');
-		const parser = new StandardEnglishParser(lexed);
+		parser.PutTokensManually('5-6a');
 
 		const result = parser.parseVerses();
 		expect(result.t).toEqual([
@@ -62,8 +55,7 @@ describe('Verse parsing', () => {
 		]);
 	});
 	test('5aa,6', () => {
-		const lexed = lexer.lex('5aa,6');
-		const parser = new StandardEnglishParser(lexed);
+		parser.PutTokensManually('5aa,6');
 
 		const result = parser.parseVerses();
 		expect(result.t).toBeNull();

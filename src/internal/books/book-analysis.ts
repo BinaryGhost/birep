@@ -778,6 +778,10 @@ export function giveBookName(book: t_book | t_ordinal_book): string {
 }
 
 export function reconstructReferenceForTesting(ref: t_reference[]): string {
+	if (ref === undefined) {
+		return '';
+	}
+
 	let all_ref: string = '';
 	for (let i = 0; i < ref.length; i++) {
 		const rf = ref[i];

@@ -1,15 +1,11 @@
 import { describe, test, expect } from 'bun:test';
 import { StandardEnglishParser } from '../parser';
-import { StandardEnglishLexer } from '../lexer';
-import { standard_style } from '../lang';
 import { reconstructReferenceForTesting } from '../../../internal/books/book-analysis';
 
-const lexer = new StandardEnglishLexer(standard_style);
+const parser = new StandardEnglishParser();
 
 function TestRef(input: string): string {
-	const lexed = lexer.lex(input);
-	const parser = new StandardEnglishParser(lexed);
-	const result = parser.parse();
+	const result = parser.parse(input);
 
 	return reconstructReferenceForTesting(result.t!);
 }

@@ -50,7 +50,8 @@ export class StandardEnglishLexer extends BaseLexer {
 				i = j;
 			} else {
 				// TODO: Handle Invalid Character Error here
-				break;
+				console.log(`Invalid Character found: "${char}"`);
+				return [];
 			}
 		}
 
